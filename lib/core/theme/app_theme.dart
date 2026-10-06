@@ -20,7 +20,7 @@ abstract class ThemeManager {
     ),
 
     // Text Form Field Theme
-    /* inputDecorationTheme: InputDecorationTheme(
+    inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: AppColors.backGroundGrey,
       hintStyle: TextStyle(
@@ -91,6 +91,6 @@ abstract class ThemeManager {
       selectedLabelStyle: TextStyle(fontSize: 14, fontWeight: .w500),
       unselectedLabelStyle: TextStyle(fontWeight: .w500, fontSize: 14),
       selectedIconTheme: IconThemeData(size: 24),
-    ),*/
+    ),
   );
 }

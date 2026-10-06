@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopping_app/core/theme/app_colors.dart';
 
 class CustomTextFormField extends StatefulWidget {
   const CustomTextFormField({
@@ -59,6 +60,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: widget.controller,
+      enabled: widget.enabled,
       validator: widget.validator,
       onChanged: widget.onChanged,
       onEditingComplete: widget.onEditingComplete,
@@ -68,15 +70,15 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       textInputAction: widget.action ?? TextInputAction.next,
       focusNode: widget.focusNode,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+      style: const TextStyle(fontSize: 16, fontWeight: .w500),
       textAlignVertical: TextAlignVertical.center,
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.transparent,
         hintText: widget.hintText,
-        hintStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        hintStyle: const TextStyle(fontSize: 16, fontWeight: .w500),
         errorMaxLines: 4,
-        errorStyle: const TextStyle(color: Colors.red),
+        errorStyle: const TextStyle(color: AppColors.red),
         prefixIcon: widget.prefixIcon,
         prefix: widget.prefix,
         suffixIcon: widget.isPassword
@@ -92,11 +94,11 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           horizontal: 13,
           vertical: 14,
         ),
-        border: _outlineInputBorder(color: Colors.grey, width: 1),
-        enabledBorder: _outlineInputBorder(color: Colors.grey, width: 1),
-        focusedBorder: _outlineInputBorder(color: Colors.black, width: 1),
-        errorBorder: _outlineInputBorder(color: Colors.red, width: 1),
-        focusedErrorBorder: _outlineInputBorder(color: Colors.red, width: 1),
+        border: _outlineInputBorder(color: AppColors.grey, width: 1),
+        enabledBorder: _outlineInputBorder(color: AppColors.grey, width: 1),
+        focusedBorder: _outlineInputBorder(color: AppColors.black, width: 1),
+        errorBorder: _outlineInputBorder(color: AppColors.red, width: 1),
+        focusedErrorBorder: _outlineInputBorder(color: AppColors.red, width: 1),
       ),
     );
   }

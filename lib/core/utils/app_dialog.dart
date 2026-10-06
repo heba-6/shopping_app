@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopping_app/core/theme/app_colors.dart';
 
 abstract class AppDialogs {
   // Show a loading dialog
@@ -10,18 +11,18 @@ abstract class AppDialogs {
         return PopScope(
           canPop: false,
           child: AlertDialog(
-            backgroundColor: Colors.white,
+            backgroundColor: AppColors.white,
             content: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const CircularProgressIndicator(color: Colors.black),
+                const CircularProgressIndicator(color: AppColors.black),
                 const SizedBox(width: 16),
                 const Text(
                   'Loading...',
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    fontWeight: .bold,
+                    color: AppColors.black,
                   ),
                 ),
               ],

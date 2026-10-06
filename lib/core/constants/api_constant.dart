@@ -1,7 +1,7 @@
 abstract class ApiConstants {
   static const String baseUrl = 'https://supermarket-dan1.onrender.com/api/v1';
-  static String register = "/auth/signUp";
-  static String login = "/auth/signIn";
+  static const String register = "/auth/signUp";
+  static const String login = "/auth/signIn";
 
   static const String getProByCategory = '/home/products/category';
   static const String getAllCategories = '/home/categories';

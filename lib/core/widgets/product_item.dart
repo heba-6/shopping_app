@@ -17,8 +17,8 @@ class ProductItem extends StatelessWidget {
   });
 
   final void Function()? addToCartOnTap;
+  final void Function()? favoriteOnTap;
   final bool isInCart;
-  final Widget? favoriteOnTap;
 
   final String title;
   final double discount;
@@ -67,12 +67,10 @@ class ProductItem extends StatelessWidget {
 
                 Positioned(
                   right: 4,
-                  child:
-                      favoriteOnTap ??
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.favorite_border_rounded),
-                      ),
+                  child: IconButton(
+                    onPressed: favoriteOnTap,
+                    icon: Icon(Icons.favorite_border_rounded),
+                  ),
                 ),
               ],
             ),
