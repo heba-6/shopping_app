@@ -40,7 +40,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           onPressed: () {
                             // Skip logic
                           },
-                          child: const Text(
+                          child:  Text(
                             "skip",
                             style: TextStyle(
                               color: Color(0xff1F1F1F),
