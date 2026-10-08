@@ -1,31 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shopping_app/core/model/item/product_item_entity.dart';
 import 'package:shopping_app/core/theme/app_colors.dart';
 
-class ProductItem extends StatelessWidget {
-  const ProductItem({
+class ProductItemCard extends StatelessWidget {
+  const ProductItemCard({
     super.key,
+    required this.product,
     required this.onTap,
     this.favoriteOnTap,
     this.addToCartOnTap,
-    required this.title,
-    required this.discount,
-    required this.price,
-    required this.rating,
-    required this.image,
     this.isInCart = false,
   });
-
+  final ProductsEntity product;
+  final void Function()? onTap;
   final void Function()? addToCartOnTap;
   final void Function()? favoriteOnTap;
   final bool isInCart;
-
-  final String title;
-  final double discount;
-  final double price;
-  final double rating;
-  final String image;
-  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +29,7 @@ class ProductItem extends StatelessWidget {
           border: Border.all(color: AppColors.orangeLight, width: 2),
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Stack(
               children: [
@@ -52,14 +44,16 @@ class ProductItem extends StatelessWidget {
                       height: 150,
                       width: double.infinity,
                       child: CachedNetworkImage(
-                        imageUrl: image,
-
+                        imageUrl: product.image.isNotEmpty
+                            ? product.image.first
+                            : '',
                         placeholder: (context, url) =>
                             CircularProgressIndicator(
                               color: AppColors.primaryOrange,
                               padding: EdgeInsets.all(60),
                             ),
                         errorWidget: (context, url, error) => Icon(Icons.error),
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
@@ -67,6 +61,7 @@ class ProductItem extends StatelessWidget {
 
                 Positioned(
                   right: 4,
+                  top: 4,
                   child: IconButton(
                     onPressed: favoriteOnTap,
                     icon: Icon(Icons.favorite_border_rounded),
@@ -81,7 +76,7 @@ class ProductItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    product.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.labelMedium!.copyWith(
@@ -92,7 +87,7 @@ class ProductItem extends StatelessWidget {
                   SizedBox(height: 4),
 
                   Text(
-                    "EGP $price",
+                    "EGP ${product.price}",
                     maxLines: 2,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
@@ -104,7 +99,7 @@ class ProductItem extends StatelessWidget {
                       child: Text(
                         softWrap: true,
                         maxLines: 2,
-                        "Disc:$discount%",
+                        "Disc:${product.discount}%",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: AppColors.red,
@@ -119,7 +114,7 @@ class ProductItem extends StatelessWidget {
                       Icon(Icons.star, color: AppColors.orangeLight, size: 16),
                       SizedBox(width: 2),
                       Text(
-                        "$rating",
+                        "${product.rating}",
                         style: Theme.of(context).textTheme.labelMedium
                             ?.copyWith(fontWeight: FontWeight.bold),
                       ),
