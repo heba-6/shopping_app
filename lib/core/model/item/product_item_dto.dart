@@ -1,10 +1,7 @@
-class ProductItemDto {
-  List<ProductsDto>? list;
-  int? total;
-  int? skip;
-  int? limit;
+import 'package:shopping_app/core/model/item/product_item_entity.dart';
 
-  ProductItemDto({this.list, this.total, this.skip, this.limit});
+class ProductItemDto extends ProductItemEntity {
+  ProductItemDto({super.list, super.total, super.skip, super.limit});
 
   ProductItemDto.fromJson(Map<String, dynamic> json) {
     if (json['list'] != null) {
@@ -19,38 +16,23 @@ class ProductItemDto {
   }
 }
 
-class ProductsDto {
-  int? id;
-  String? title;
-  String? description;
-  String? category;
-  double? price;
-  double? discountPercentage;
-  double? rating;
-
-  List<String>? images;
-
+class ProductsDto extends ProductsEntity {
   ProductsDto({
-    this.id,
-    this.title,
-    this.description,
-    this.category,
-    this.price,
-    this.discountPercentage,
-    this.rating,
-    this.images,
+    super.id,
+    super.title,
+    super.description,
+    super.price,
+    super.discount,
+    super.rating,
+    super.image,
   });
   ProductsDto.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
     description = json['description'];
-    category = json['category'];
-    price = price = (json['price'] as num?)?.toDouble();
-
-    discountPercentage = (json['discountPercentage'] as num?)?.toDouble();
-    rating = (json['rating'] as num?)?.toDouble();
-    images = (json['images'] as List?)
-        ?.map((image) => image.toString())
-        .toList();
+    price = json['price'];
+    discount = json['discount'];
+    rating = json['rating'];
+    image = json['images'];
   }
 }

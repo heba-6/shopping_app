@@ -1,34 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:shopping_app/core/widgets/product_item.dart';
+import 'package:shopping_app/core/constants/app_assets/app_asset_image.dart';
+import 'package:shopping_app/core/model/item/product_item_entity.dart';
+import 'package:shopping_app/core/widgets/product_item_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final Product = ProductsEntity(
+      id: 1,
+      title: "title",
+      description: "This is a detailed description of the product.",
+      price: 150,
+      discount: 12.5,
+      rating: 4.7,
+      image: [AssetsImages.onboarding_1],
+    );
     return GridView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      itemCount: 10,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 30,
-        mainAxisSpacing: 16,
+        mainAxisSpacing: 18,
         childAspectRatio: 163 / 288,
       ),
-      itemCount: 10,
-      itemBuilder: (context, index) {
-        return ProductItem(
-          discount: 30,
-          image: imageUrl,
-          onTap: () {},
-          price: 100,
-          rating: 4.5,
-          title: "Eyeshadow Palette with Mirror",
-          // favouriteOnTap: () {},
-        );
-      },
+      itemBuilder: (context, index) => ProductItemCard(
+        product: Product,
+        onTap: () {},
+        favoriteOnTap: () {},
+        addToCartOnTap: () {},
+      ),
     );
   }
 }
-
-const String imageUrl =
-    "https://cdn.dummyjson.com/product-images/beauty/eyeshadow-palette-with-mirror/1.webp";

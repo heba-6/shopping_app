@@ -16,21 +16,19 @@ class ProductsEntity {
   int id;
   String title;
   String description;
-  String category;
   double price;
-  double discountPercentage;
+  double discount;
   double rating;
 
-  List<String>? images;
+  List<String> image;
 
   ProductsEntity({
     this.id = 0,
     this.title = "title",
     this.description = "description",
-    this.category = "category",
     this.price = 10,
-    this.discountPercentage = 7,
+    this.discount = 7,
     this.rating = 5.0,
-    this.images = const [],
+    this.image = const [],
   });
 }
