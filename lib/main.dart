@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeManager.light,
       debugShowCheckedModeBanner: false,
-      initialRoute: RoutesManager.onBoarding,
+      initialRoute: RoutesManager.appSection,
       routes: {
         RoutesManager.onBoarding: (context) => const OnboardingScreen(),
         RoutesManager.home: (context) =>
