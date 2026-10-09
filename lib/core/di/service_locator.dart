@@ -1,3 +1,12 @@
+// import 'package:get_it/get_it.dart';
+// import 'package:injectable/injectable.dart';
+// import 'service_locator.config.dart';
+
+// final serviceLocator = GetIt.instance;
+
+// @InjectableInit()
+// void configureDependencies() => serviceLocator.init();
+
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'service_locator.config.dart';
@@ -5,4 +14,6 @@ import 'service_locator.config.dart';
 final serviceLocator = GetIt.instance;
 
 @InjectableInit()
-void configureDependencies() => serviceLocator.init();
+void configureDependencies() {
+  serviceLocator.init();
+}

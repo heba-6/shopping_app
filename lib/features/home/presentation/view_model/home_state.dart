@@ -1,17 +1,19 @@
-import 'package:shopping_app/features/home/data/model/product_Response_dto.dart';
+part of 'home_cubit.dart';
 
-part 'home_cubit.dart';
-@immutable
-abstract Homeinitial extends HomeState{
+sealed class HomeState {}
 
+class HomeInitial extends HomeState {}
+
+class HProductLoading extends HomeState {}
+
+class HProductSuccess extends HomeState {
+  final List<ProductItemEntity> products;
+
+  HProductSuccess(this.products);
 }
-class HProductloading extends Homestate{}
 
-class HProductSuccess extends HomeState{
-  final List<ProductItemEntity> ProductItemEntity;
-  HProductSuccess(this.ProductItemEntity)
-}
-class HProducError extends HomeState{
+class HProductError extends HomeState {
   final String error;
-  HProducError(this.error);
+
+  HProductError(this.error);
 }

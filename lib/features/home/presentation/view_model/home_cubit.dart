@@ -1,35 +1,38 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shopping_app/core/networking/result_api.dart';
-import 'package:shopping_app/features/home/data/model/product_response_dto.dart';
-import 'package:shopping_app/features/home/domain/entities/product_response_entity.dart.dart';
-import 'package:shopping_app/features/home/presentation/view_model/home_state.dart';
+import 'package:shopping_app/features/home/domain/entities/product_response_entity.dart';
+import 'package:shopping_app/features/home/domain/use_case/get_all_product_use_case.dart';
+// import 'package:shopping_app/features/home/presentation/view_model/home_intent.dart';
 
 part 'home_state.dart';
 part 'home_intent.dart';
 
 @injectable
-class HomeCubit extends Cubit<Homestate> {
-  HomeCubit() : super(homeInitial());
-  HomeCubit(this._getAllProductUseCase) : super(HomeInitial());
+class HomeCubit extends Cubit<HomeState> {
   final GetAllProductUseCase _getAllProductUseCase;
+
+  HomeCubit(this._getAllProductUseCase) : super(HomeInitial());
+
   Future<void> intent(HomeIntent intent) async {
     switch (intent) {
       case HProducts():
-        await_getProduct();
+        await _getProduct();
     }
   }
 
-  Future<void> _getProuduct() async {
-    emit(HProductloading());
+  Future<void> _getProduct() async {
+    emit(HProductLoading());
+
     final result = await _getAllProductUseCase.invoke();
+
     switch (result) {
       case Success<ProductResponseEntity>():
-        final Listproduct = result.data.list;
-        emit(HProductSuccess(Listproduct));
-        throw UnimplementedError();
+        final products = result.data.list;
+        emit(HProductSuccess(products));
+
       case Error<ProductResponseEntity>():
-        emit(HProducError(result.massageError));
+        emit(HProductError(result.messageError));
     }
   }
 }
