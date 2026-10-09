@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shopping_app/core/theme/app_colors.dart';
 
-class LoginScreen extends StatelessWidget {
-const LoginScreen({super.key});
+class RegisterScreen extends StatelessWidget {
+const RegisterScreen({super.key});
 
 @override
 Widget build(BuildContext context) {
