@@ -25,6 +25,10 @@ class HomeCubit extends Cubit<HomeState> {
     emit(HProductLoading());
 
     final result = await _getAllProductUseCase.invoke();
+    if (isClosed) return;
+    // لو الـ Cubit اتقفل أثناء تحميل البيانات
+    // ما نحاولش نغيّر الـ State بعد كده
+    if (isClosed) return;
 
     switch (result) {
       case Success<ProductResponseEntity>():

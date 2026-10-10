@@ -46,10 +46,10 @@ Future<void> main() async {
 
   runApp(
     MyApp(
-      // initialRoute: seenOnboarding
-      //     ? RoutesManager.home
-      //     : RoutesManager.onBoarding,
-      initialRoute: RoutesManager.onBoarding,
+      initialRoute: seenOnboarding
+          ? RoutesManager.home
+          : RoutesManager.onBoarding,
+      // initialRoute: RoutesManager.onBoarding,
     ),
   );
 }
