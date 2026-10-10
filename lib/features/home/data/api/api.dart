@@ -24,6 +24,12 @@ class Api {
       final response = await _dio.get<Map<String, dynamic>>(
         '/home/products',
         queryParameters: {'skip': 0, 'limit': 10},
+        options: Options(
+          headers: {
+            'Authorization':
+                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhYzU5MjNjYjMwZmIxZjQ3OGViYjI4YSIsImlhdCI6MTc5MTMzMjk1NywiZXhwIjoxNzkzOTI0OTU3fQ._J0AxP7zz5fqIX0GWCvZ0Q8AUhwr5I-Jet-twi9q14A',
+          },
+        ),
       );
 
       if (response.data == null) {
