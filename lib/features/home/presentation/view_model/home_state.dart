@@ -1,19 +1,44 @@
 part of 'home_cubit.dart';
 
-sealed class HomeState {}
-
-class HomeInitial extends HomeState {}
-
-class HProductLoading extends HomeState {}
-
-class HProductSuccess extends HomeState {
+class HomeState {
+  final bool isProductsLoading;
   final List<ProductItemEntity> products;
+  final String? productError;
 
-  HProductSuccess(this.products);
-}
+  final bool isCategoriesLoading;
+  final List<CategoryEntity> categories;
+  final String? categoriesError;
 
-class HProductError extends HomeState {
-  final String error;
+  const HomeState({
+    this.isProductsLoading = false,
+    this.products = const [],
+    this.productError,
+    this.isCategoriesLoading = false,
+    this.categories = const [],
+    this.categoriesError,
+  });
 
-  HProductError(this.error);
+  HomeState copyWith({
+    bool? isProductsLoading,
+    List<ProductItemEntity>? products,
+    String? productError,
+    bool clearProductError = false,
+    bool? isCategoriesLoading,
+    List<CategoryEntity>? categories,
+    String? categoriesError,
+    bool clearCategoriesError = false,
+  }) {
+    return HomeState(
+      isProductsLoading: isProductsLoading ?? this.isProductsLoading,
+      products: products ?? this.products,
+      productError: clearProductError
+          ? null
+          : productError ?? this.productError,
+      isCategoriesLoading: isCategoriesLoading ?? this.isCategoriesLoading,
+      categories: categories ?? this.categories,
+      categoriesError: clearCategoriesError
+          ? null
+          : categoriesError ?? this.categoriesError,
+    );
+  }
 }

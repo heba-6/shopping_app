@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopping_app/core/model/item/product_item_entity.dart';
 import 'package:shopping_app/core/widgets/product_item_card.dart';
 import 'package:shopping_app/features/home/presentation/view_model/home_cubit.dart';
+import 'package:shopping_app/features/home/presentation/view/widgets/categories_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,14 +13,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String? selectedSlug;
+
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-
-      context.read<HomeCubit>().intent(HProducts());
+      context.read<HomeCubit>().loadHome();
     });
   }
 
@@ -29,62 +31,94 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(title: const Text('Shopping App'), centerTitle: false),
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
-          if (state is HProductLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 12),
 
-          if (state is HProductError) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  'Error: ${state.error}',
-                  textAlign: TextAlign.center,
+              // Categories section
+              if (state.isCategoriesLoading)
+                const SizedBox(
+                  height: 48,
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else if (state.categoriesError != null)
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                    'Failed to load categories: ${state.categoriesError}',
+                  ),
+                )
+              else
+                CategoriesWidget(
+                  categories: state.categories,
+                  selectedSlug: selectedSlug,
+                  onCategoryTap: (slug) {
+                    setState(() {
+                      selectedSlug = slug;
+                    });
+                  },
                 ),
-              ),
-            );
-          }
 
-          if (state is HProductSuccess) {
-            final products = state.products;
+              const SizedBox(height: 12),
 
-            if (products.isEmpty) {
-              return const Center(child: Text('No products available'));
-            }
+              // Products section
+              if (state.isProductsLoading)
+                const Expanded(
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else if (state.productError != null)
+                Expanded(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        'Failed to load products: ${state.productError}',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                )
+              else if (state.products.isEmpty)
+                const Expanded(
+                  child: Center(child: Text('No products available')),
+                )
+              else
+                Expanded(
+                  child: GridView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: state.products.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 18,
+                          childAspectRatio: 163 / 288,
+                        ),
+                    itemBuilder: (context, index) {
+                      final apiProduct = state.products[index];
 
-            return GridView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: products.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 18,
-                childAspectRatio: 163 / 288,
-              ),
-              itemBuilder: (context, index) {
-                final apiProduct = products[index];
+                      final product = ProductsEntity(
+                        id: apiProduct.id,
+                        title: apiProduct.title,
+                        description: apiProduct.description,
+                        price: apiProduct.price,
+                        discount: apiProduct.discountPercentage,
+                        rating: apiProduct.rating,
+                        image: apiProduct.images,
+                      );
 
-                final product = ProductsEntity(
-                  id: apiProduct.id,
-                  title: apiProduct.title,
-                  description: apiProduct.description,
-                  price: apiProduct.price,
-                  discount: apiProduct.discountPercentage,
-                  rating: apiProduct.rating,
-                  image: apiProduct.images,
-                );
-
-                return ProductItemCard(
-                  product: product,
-                  onTap: () {},
-                  favoriteOnTap: () {},
-                  addToCartOnTap: () {},
-                );
-              },
-            );
-          }
-
-          return const Center(child: CircularProgressIndicator());
+                      return ProductItemCard(
+                        product: product,
+                        onTap: () {},
+                        favoriteOnTap: () {},
+                        addToCartOnTap: () {},
+                      );
+                    },
+                  ),
+                ),
+            ],
+          );
         },
       ),
     );
