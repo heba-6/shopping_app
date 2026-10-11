@@ -3,20 +3,26 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:shopping_app/core/di/service_locator.dart';
 import 'package:shopping_app/core/route/app_route.dart';
 import 'package:shopping_app/core/theme/app_theme.dart';
-
-import 'package:shopping_app/features/home/presentation/view/screens/home_screen.dart';
-import 'package:shopping_app/features/onboarding/presentation/view/screens/onboarding_screen.dart';
-import 'package:shopping_app/features/auth/presentation/view/screens/hello_screen.dart';
 import 'package:shopping_app/features/app_section/view/app_section_screen.dart';
 import 'package:shopping_app/features/app_section/view_model/app_section_cubit.dart';
+import 'package:shopping_app/features/auth/presentation/view/screens/hello_screen.dart';
+import 'package:shopping_app/features/home/presentation/view/screens/home_screen.dart';
+import 'package:shopping_app/features/home/presentation/view_model/home_cubit.dart';
+import 'package:shopping_app/features/onboarding/presentation/view/screens/onboarding_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final prefs = await SharedPreferences.getInstance();
+  configureDependencies();
 
+  final prefs = await SharedPreferences.getInstance();
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/dev
   final bool seenOnboarding = prefs.getBool('seenOnboarding') ?? false;
 
   runApp(
@@ -43,8 +49,15 @@ class MyApp extends StatelessWidget {
 
         RoutesManager.hello: (context) => const HelloScreen(),
 
+<<<<<<< HEAD
         RoutesManager.home: (context) =>
             const Scaffold(body: SafeArea(child: HomeScreen())),
+=======
+        RoutesManager.home: (context) => BlocProvider(
+          create: (context) => serviceLocator<HomeCubit>(),
+          child: const Scaffold(body: SafeArea(child: HomeScreen())),
+        ),
+>>>>>>> origin/dev
 
         RoutesManager.appSection: (context) => BlocProvider(
           create: (context) => AppSectionCubit(),

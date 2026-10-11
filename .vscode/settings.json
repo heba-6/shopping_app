@@ -1,0 +1,11 @@
+{
+    "cmake.sourceDirectory": "D:/FlutterNTI/practice_app/shopping_app/linux/flutter",
+    "python-envs.pythonProjects": [
+        {
+            "path": "lib/features/home/presentation/view_model",
+            "envManager": "ms-python.python:venv",
+            "packageManager": "ms-python.python:pip"
+        }
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
+}
