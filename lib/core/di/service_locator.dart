@@ -4,5 +4,7 @@ import 'service_locator.config.dart';
 
 final serviceLocator = GetIt.instance;
 
-@InjectableInit()
-void configureDependencies() => serviceLocator.init();
+@InjectableInit(initializerName: 'init', preferRelativeImports: true)
+void configureDependencies() {
+  serviceLocator.init();
+}
