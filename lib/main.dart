@@ -1,11 +1,15 @@
-import 'package:shopping_app/core/storage/token_storage.dart';
-import 'package:shopping_app/core/di/service_locator.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shopping_app/features/home/presentation/view_model/home_cubit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:shopping_app/core/di/service_locator.dart';
 import 'package:shopping_app/core/route/app_route.dart';
+import 'package:shopping_app/core/theme/app_theme.dart';
+import 'package:shopping_app/features/app_section/view/app_section_screen.dart';
+import 'package:shopping_app/features/app_section/view_model/app_section_cubit.dart';
+import 'package:shopping_app/features/auth/presentation/view/screens/hello_screen.dart';
 import 'package:shopping_app/features/home/presentation/view/screens/home_screen.dart';
+import 'package:shopping_app/features/home/presentation/view_model/home_cubit.dart';
 import 'package:shopping_app/features/onboarding/presentation/view/screens/onboarding_screen.dart';
 
 Future<void> main() async {
@@ -16,16 +20,11 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   final bool seenOnboarding = prefs.getBool('seenOnboarding') ?? false;
 
-  await TokenStorage().saveToken(
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhYzU5MjNjYjMwZmIxZjQ3OGViYjI4YSIsImlhdCI6MTc5MTY3NjQ0NCwiZXhwIjoxNzk0MjY4NDQ0fQ.0wukQfH4pk5CPt10KGUhdGQlUN0xwZk7HPU1NCZV2bM',
-  );
-
   runApp(
     MyApp(
       initialRoute: seenOnboarding
-          ? RoutesManager.home
+          ? RoutesManager.hello
           : RoutesManager.onBoarding,
-      // initialRoute: RoutesManager.onBoarding,
     ),
   );
 }
@@ -39,15 +38,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
+      theme: ThemeManager.light,
       initialRoute: initialRoute,
-
       routes: {
         RoutesManager.onBoarding: (context) => const OnboardingScreen(),
 
+        RoutesManager.hello: (context) => const HelloScreen(),
+
         RoutesManager.home: (context) => BlocProvider(
           create: (context) => serviceLocator<HomeCubit>(),
-          child: Scaffold(body: SafeArea(child: HomeScreen())),
+          child: const Scaffold(body: SafeArea(child: HomeScreen())),
+        ),
+
+        RoutesManager.appSection: (context) => BlocProvider(
+          create: (context) => AppSectionCubit(),
+          child: AppSectionScreen(),
         ),
       },
     );
