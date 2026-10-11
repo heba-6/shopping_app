@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shopping_app/features/home/domain/entities/category_entity.dart';
-import 'package:shopping_app/features/home/presentation/view/widgets/categories_widget.dart';
 
 class CategoriesWidget extends StatelessWidget {
   const CategoriesWidget({
@@ -12,7 +11,7 @@ class CategoriesWidget extends StatelessWidget {
 
   final List<CategoryEntity> categories;
   final String? selectedSlug;
-  final ValueChanged<String> onCategoryTap;
+  final ValueChanged<CategoryEntity> onCategoryTap;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +33,7 @@ class CategoriesWidget extends StatelessWidget {
             name: category.name,
             slug: category.slug,
             isSelected: category.slug == selectedSlug,
-            onTap: () => onCategoryTap(category.slug),
+            onTap: () => onCategoryTap(category),
           );
         },
       ),
