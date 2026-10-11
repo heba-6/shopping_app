@@ -1,15 +1,19 @@
 class ProductByCategoryEntity {
   final int id;
   final String title;
-  final String image;
+  final String description;
   final double price;
-  final double discount;
+  final double discountPercentage;
+  final double rating;
+  final List<String> images;
 
   const ProductByCategoryEntity({
     required this.id,
     required this.title,
-    required this.image,
+    required this.description,
     required this.price,
-    required this.discount,
+    required this.discountPercentage,
+    required this.rating,
+    required this.images,
   });
 }

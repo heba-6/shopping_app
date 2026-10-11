@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopping_app/core/model/item/product_item_entity.dart';
 // import 'package:shopping_app/core/widgets/product_item_card.dart';
 import 'package:shopping_app/core/widgets/shared_item_widget.dart';
+import 'package:shopping_app/features/home/domain/entities/category_entity.dart';
 import 'package:shopping_app/features/home/presentation/view_model/home_cubit.dart';
 import 'package:shopping_app/features/home/presentation/view/widgets/categories_widget.dart';
+import 'package:shopping_app/features/products_by_category/presentation/view/screens/products_by_category_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -51,10 +53,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 CategoriesWidget(
                   categories: state.categories,
                   selectedSlug: selectedSlug,
-                  onCategoryTap: (slug) {
+                  onCategoryTap: (CategoryEntity category) {
                     setState(() {
-                      selectedSlug = slug;
+                      selectedSlug = category.slug;
                     });
+
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => ProductsByCategoryScreen(
+                          slug: category.slug,
+                          categoryName: category.name,
+                        ),
+                      ),
+                    );
                   },
                 ),
 

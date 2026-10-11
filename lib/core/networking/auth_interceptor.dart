@@ -56,6 +56,9 @@ class AuthInterceptor extends Interceptor {
     try {
       final token = await _tokenStorage.getToken();
 
+      print('TOKEN EXISTS: ${token != null && token.trim().isNotEmpty}');
+      print('TOKEN LENGTH: ${token?.trim().length ?? 0}');
+
       if (token != null && token.trim().isNotEmpty) {
         options.headers['Authorization'] = 'Bearer ${token.trim()}';
       } else {

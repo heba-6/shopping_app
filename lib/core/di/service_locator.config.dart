@@ -27,6 +27,22 @@ import '../../features/home/domain/use_case/get_all_product_use_case.dart'
     as _i206;
 import '../../features/home/presentation/view_model/home_cubit.dart' as _i940;
 import '../../features/onboarding/data/api/api.dart' as _i14;
+import '../../features/products_by_category/data/api/products_by_category_api.dart'
+    as _i883;
+import '../../features/products_by_category/data/repo/data_source/products_by_category_data_source_imp.dart'
+    as _i890;
+import '../../features/products_by_category/data/repo/repo/products_by_category_repo_imp.dart'
+    as _i459;
+import '../../features/products_by_category/domain/repo/products_by_category_data_source_interface.dart'
+    as _i417;
+import '../../features/products_by_category/domain/repo/products_by_category_repo_interface.dart'
+    as _i65;
+import '../../features/products_by_category/domain/use_case/get_products_by_category_use_case.dart'
+    as _i552;
+import '../../features/products_by_category/presentation/view_model/products_by_category_cubit.dart'
+    as _i1055;
+import '../networking/auth_interceptor.dart' as _i323;
+import '../storage/token_storage.dart' as _i973;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -36,11 +52,23 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final networkModule = _$NetworkModule();
+    gh.lazySingleton<_i973.TokenStorage>(() => _i973.TokenStorage());
     gh.lazySingleton<_i361.Dio>(() => networkModule.dio);
     gh.lazySingleton<_i168.Api>(() => _i168.Api(gh<_i361.Dio>()));
     gh.lazySingleton<_i14.Api>(() => _i14.Api(gh<_i361.Dio>()));
+    gh.lazySingleton<_i883.ProductsByCategoryApi>(
+      () => _i883.ProductsByCategoryApi(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i323.AuthInterceptor>(
+      () => _i323.AuthInterceptor(gh<_i973.TokenStorage>()),
+    );
     gh.lazySingleton<_i273.HomeDataSourceInterface>(
       () => _i879.HomeDataSourceImpl(gh<_i168.Api>()),
+    );
+    gh.lazySingleton<_i417.ProductsByCategoryDataSourceInterface>(
+      () => _i890.ProductsByCategoryDataSourceImpl(
+        gh<_i883.ProductsByCategoryApi>(),
+      ),
     );
     gh.factory<_i1027.HomeRepoInterface>(
       () => _i1000.HomeRepoImpl(gh<_i273.HomeDataSourceInterface>()),
@@ -48,8 +76,23 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i843.GetAllCategoriesUseCase>(
       () => _i843.GetAllCategoriesUseCase(gh<_i1027.HomeRepoInterface>()),
     );
+    gh.lazySingleton<_i65.ProductsByCategoryRepoInterface>(
+      () => _i459.ProductsByCategoryRepoImpl(
+        gh<_i417.ProductsByCategoryDataSourceInterface>(),
+      ),
+    );
     gh.factory<_i206.GetAllProductUseCase>(
       () => _i206.GetAllProductUseCase(gh<_i1027.HomeRepoInterface>()),
+    );
+    gh.factory<_i552.GetProductsByCategoryUseCase>(
+      () => _i552.GetProductsByCategoryUseCase(
+        repo: gh<_i65.ProductsByCategoryRepoInterface>(),
+      ),
+    );
+    gh.factory<_i1055.ProductsByCategoryCubit>(
+      () => _i1055.ProductsByCategoryCubit(
+        gh<_i552.GetProductsByCategoryUseCase>(),
+      ),
     );
     gh.factory<_i940.HomeCubit>(
       () => _i940.HomeCubit(
