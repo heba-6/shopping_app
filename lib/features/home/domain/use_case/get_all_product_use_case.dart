@@ -9,7 +9,10 @@ class GetAllProductUseCase {
 
   GetAllProductUseCase(this._repo);
 
-  Future<ResultApi<ProductResponseEntity>> invoke() {
-    return _repo.getallproduct();
+  Future<ResultApi<ProductResponseEntity>> invoke({
+    required int skip,
+    int limit = 10,
+  }) {
+    return _repo.getallproduct(skip: skip, limit: limit);
   }
 }

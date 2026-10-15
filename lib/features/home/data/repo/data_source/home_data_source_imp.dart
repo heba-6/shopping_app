@@ -48,9 +48,12 @@ class HomeDataSourceImpl implements HomeDataSourceInterface {
   HomeDataSourceImpl(this._api);
 
   @override
-  Future<ResultApi<ProductResponseEntity>> getallproduct() async {
+  Future<ResultApi<ProductResponseEntity>> getallproduct({
+    required int skip,
+    int limit = 10,
+  }) async {
     try {
-      final json = await _api.getAllProducts();
+      final json = await _api.getAllProducts(skip: skip, limit: limit);
 
       final dto = ProductResponseDto.fromJson(json);
 
@@ -70,8 +73,8 @@ class HomeDataSourceImpl implements HomeDataSourceInterface {
         ProductResponseEntity(
           list: products,
           total: dto.total ?? 0,
-          skip: dto.skip ?? 0,
-          limit: dto.limit ?? 0,
+          skip: dto.skip ?? skip,
+          limit: dto.limit ?? limit,
         ),
       );
     } catch (e) {

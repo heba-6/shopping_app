@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:shopping_app/core/networking/result_api.dart';
-import 'package:shopping_app/features/products_by_category/domain/entities/product_by_category_entity.dart';
+import 'package:shopping_app/features/products_by_category/domain/entities/products_by_category_page_entity.dart';
 import 'package:shopping_app/features/products_by_category/domain/repo/products_by_category_data_source_interface.dart';
 import 'package:shopping_app/features/products_by_category/domain/repo/products_by_category_repo_interface.dart';
 
@@ -11,16 +11,22 @@ class ProductsByCategoryRepoImpl implements ProductsByCategoryRepoInterface {
   ProductsByCategoryRepoImpl(this._dataSource);
 
   @override
-  Future<List<ProductByCategoryEntity>> getProductsByCategory(
-    String slug,
-  ) async {
-    final result = await _dataSource.getProductsByCategory(slug);
+  Future<ProductsByCategoryPageEntity> getProductsByCategory(
+    String slug, {
+    required int skip,
+    int limit = 10,
+  }) async {
+    final result = await _dataSource.getProductsByCategory(
+      slug,
+      skip: skip,
+      limit: limit,
+    );
 
-    if (result is Success<List<ProductByCategoryEntity>>) {
+    if (result is Success<ProductsByCategoryPageEntity>) {
       return result.data;
     }
 
-    if (result is Error<List<ProductByCategoryEntity>>) {
+    if (result is Error<ProductsByCategoryPageEntity>) {
       throw Exception(result.messageError);
     }
 

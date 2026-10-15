@@ -2,6 +2,8 @@ part of 'home_cubit.dart';
 
 class HomeState {
   final bool isProductsLoading;
+  final bool isLoadingMore;
+  final bool hasMoreProducts;
   final List<ProductItemEntity> products;
   final String? productError;
 
@@ -11,6 +13,8 @@ class HomeState {
 
   const HomeState({
     this.isProductsLoading = false,
+    this.isLoadingMore = false,
+    this.hasMoreProducts = true,
     this.products = const [],
     this.productError,
     this.isCategoriesLoading = false,
@@ -20,6 +24,8 @@ class HomeState {
 
   HomeState copyWith({
     bool? isProductsLoading,
+    bool? isLoadingMore,
+    bool? hasMoreProducts,
     List<ProductItemEntity>? products,
     String? productError,
     bool clearProductError = false,
@@ -30,6 +36,8 @@ class HomeState {
   }) {
     return HomeState(
       isProductsLoading: isProductsLoading ?? this.isProductsLoading,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      hasMoreProducts: hasMoreProducts ?? this.hasMoreProducts,
       products: products ?? this.products,
       productError: clearProductError
           ? null

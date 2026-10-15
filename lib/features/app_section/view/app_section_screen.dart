@@ -17,7 +17,7 @@ class AppSectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Widget> screens = [
       BlocProvider<HomeCubit>(
-        create: (context) => serviceLocator<HomeCubit>()..loadHome(),
+        create: (_) => serviceLocator<HomeCubit>()..loadHome(),
         child: const HomeScreen(),
       ),
       const CartScreen(),
@@ -30,9 +30,9 @@ class AppSectionScreen extends StatelessWidget {
         final cubit = context.read<AppSectionCubit>();
 
         return Scaffold(
-          body: screens[cubit.currentindex],
+          body: IndexedStack(index: cubit.currentIndex, children: screens),
           bottomNavigationBar: BottomNavigationBar(
-            currentIndex: cubit.currentindex,
+            currentIndex: cubit.currentIndex,
             onTap: cubit.changeTab,
             type: BottomNavigationBarType.fixed,
             items: const [

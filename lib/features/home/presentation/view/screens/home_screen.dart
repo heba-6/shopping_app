@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:shopping_app/core/model/item/product_item_entity.dart';
-// import 'package:shopping_app/core/widgets/product_item_card.dart';
 import 'package:shopping_app/core/widgets/shared_item_widget.dart';
 import 'package:shopping_app/features/home/domain/entities/category_entity.dart';
 import 'package:shopping_app/features/home/presentation/view_model/home_cubit.dart';
@@ -15,21 +15,45 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with AutomaticKeepAliveClientMixin {
   String? selectedSlug;
+
+  late final ScrollController _scrollController;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      context.read<HomeCubit>().loadHome();
-    });
+    _scrollController = ScrollController()..addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+
+    final position = _scrollController.position;
+
+    if (position.extentAfter < 300) {
+      context.read<HomeCubit>().loadMoreProducts();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Shopping App'), centerTitle: false),
       body: BlocBuilder<HomeCubit, HomeState>(
@@ -39,14 +63,15 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const SizedBox(height: 12),
 
-              // Categories section
-              if (state.isCategoriesLoading)
+              if (state.isCategoriesLoading && state.categories.isEmpty)
                 const CategoriesSkeleton()
-              else if (state.categoriesError != null)
+              else if (state.categoriesError != null &&
+                  state.categories.isEmpty)
                 Padding(
                   padding: const EdgeInsets.all(12),
                   child: Text(
-                    'Failed to load categories: ${state.categoriesError}',
+                    'Failed to load categories: '
+                    '${state.categoriesError}',
                   ),
                 )
               else
@@ -71,16 +96,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const SizedBox(height: 12),
 
-              // Products section
-              if (state.isProductsLoading)
+              if (state.isProductsLoading && state.products.isEmpty)
                 const Expanded(child: ProductsSkeleton())
-              else if (state.productError != null)
+              else if (state.productError != null && state.products.isEmpty)
                 Expanded(
                   child: Center(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Text(
-                        'Failed to load products: ${state.productError}',
+                        'Failed to load products: '
+                        '${state.productError}',
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -93,8 +118,11 @@ class _HomeScreenState extends State<HomeScreen> {
               else
                 Expanded(
                   child: GridView.builder(
+                    key: const PageStorageKey<String>('home_products_grid'),
+                    controller: _scrollController,
                     padding: const EdgeInsets.all(16),
-                    itemCount: state.products.length,
+                    itemCount:
+                        state.products.length + (state.isLoadingMore ? 2 : 0),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
@@ -103,6 +131,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           childAspectRatio: 163 / 288,
                         ),
                     itemBuilder: (context, index) {
+                      if (index >= state.products.length) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
                       final apiProduct = state.products[index];
 
                       final product = ProductsEntity(
@@ -124,6 +156,34 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ),
                 ),
+
+              if (state.productError != null && state.products.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Could not load more products.',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: state.isLoadingMore
+                            ? null
+                            : () {
+                                context.read<HomeCubit>().loadMoreProducts();
+                              },
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                ),
             ],
           );
         },
@@ -132,7 +192,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// Loading placeholders for categories
 class CategoriesSkeleton extends StatelessWidget {
   const CategoriesSkeleton({super.key});
 
@@ -144,7 +203,7 @@ class CategoriesSkeleton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         scrollDirection: Axis.horizontal,
         itemCount: 5,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (context, index) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
           return const SkeletonBox(width: 90, height: 40, radius: 20);
         },
@@ -153,7 +212,6 @@ class CategoriesSkeleton extends StatelessWidget {
   }
 }
 
-// Loading placeholders for products
 class ProductsSkeleton extends StatelessWidget {
   const ProductsSkeleton({super.key});
 
@@ -200,7 +258,6 @@ class ProductSkeletonCard extends StatelessWidget {
   }
 }
 
-// Animated gray placeholder
 class SkeletonBox extends StatefulWidget {
   final double width;
   final double? height;
