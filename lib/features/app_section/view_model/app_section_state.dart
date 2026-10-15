@@ -3,7 +3,7 @@ abstract class AppSectionState {}
 class AppSectionInitialState extends AppSectionState {}
 
 class AppSectionChangeTabState extends AppSectionState {
-  final int currentindex;
+  final int currentIndex;
 
-  AppSectionChangeTabState(this.currentindex);
+  AppSectionChangeTabState(this.currentIndex);
 }

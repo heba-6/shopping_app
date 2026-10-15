@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopping_app/core/theme/app_colors.dart';
-import 'package:shopping_app/features/auth/presentation/view/screens/login_screen.dart';
+import 'package:shopping_app/features/app_section/view/app_section_screen.dart';
+import 'package:shopping_app/features/app_section/view_model/app_section_cubit.dart';
 import 'package:shopping_app/features/auth/presentation/view/screens/register_screen.dart';
 
 class HelloScreen extends StatelessWidget {
@@ -52,10 +54,13 @@ class HelloScreen extends StatelessWidget {
                 borderColor: AppColors.orangeLight,
                 style: titleStyle,
                 onTap: () {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const LoginScreen(),
+                      builder: (context) => BlocProvider(
+                        create: (context) => AppSectionCubit(),
+                        child: AppSectionScreen(),
+                      ),
                     ),
                   );
                 },
