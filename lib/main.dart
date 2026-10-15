@@ -22,9 +22,10 @@ Future<void> main() async {
 
   runApp(
     MyApp(
-      initialRoute: seenOnboarding
-          ? RoutesManager.hello
-          : RoutesManager.onBoarding,
+      // initialRoute: seenOnboarding
+      //     ? RoutesManager.hello
+      //     : RoutesManager.onBoarding,
+      initialRoute: RoutesManager.appSection,
     ),
   );
 }
