@@ -7,10 +7,14 @@ class ProductsByCategoryApi {
 
   ProductsByCategoryApi(this._dio);
 
-  Future<Map<String, dynamic>> getProductsByCategory(String slug) async {
+  Future<Map<String, dynamic>> getProductsByCategory(
+    String slug, {
+    required int skip,
+    int limit = 10,
+  }) async {
     final response = await _dio.get<Map<String, dynamic>>(
       '/home/products/category/$slug',
-      queryParameters: {'skip': 0, 'limit': 5},
+      queryParameters: {'skip': skip, 'limit': limit},
     );
 
     if (response.data == null) {

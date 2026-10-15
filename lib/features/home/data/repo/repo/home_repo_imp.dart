@@ -12,8 +12,11 @@ class HomeRepoImpl implements HomeRepoInterface {
   HomeRepoImpl(this._homeDataSource);
 
   @override
-  Future<ResultApi<ProductResponseEntity>> getallproduct() {
-    return _homeDataSource.getallproduct();
+  Future<ResultApi<ProductResponseEntity>> getallproduct({
+    required int skip,
+    int limit = 10,
+  }) {
+    return _homeDataSource.getallproduct(skip: skip, limit: limit);
   }
 
   @override

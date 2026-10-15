@@ -28,11 +28,14 @@ class Api {
 
   Api(this._dio);
 
-  Future<Map<String, dynamic>> getAllProducts() async {
+  Future<Map<String, dynamic>> getAllProducts({
+    required int skip,
+    int limit = 10,
+  }) async {
     try {
       final response = await _dio.get<Map<String, dynamic>>(
         '/home/products',
-        queryParameters: {'skip': 0, 'limit': 10},
+        queryParameters: {'skip': skip, 'limit': limit},
       );
 
       if (response.data == null) {

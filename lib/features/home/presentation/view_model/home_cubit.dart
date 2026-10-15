@@ -14,6 +14,8 @@ class HomeCubit extends Cubit<HomeState> {
   final GetAllProductUseCase _getAllProductUseCase;
   final GetAllCategoriesUseCase _getAllCategoriesUseCase;
 
+  static const int _pageSize = 10;
+
   HomeCubit(this._getAllProductUseCase, this._getAllCategoriesUseCase)
     : super(const HomeState());
 
@@ -30,21 +32,36 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> _getProduct() async {
+    if (state.isProductsLoading) return;
+
     emit(state.copyWith(isProductsLoading: true, clearProductError: true));
 
     try {
-      final result = await _getAllProductUseCase.invoke();
+      final result = await _getAllProductUseCase.invoke(
+        skip: 0,
+        limit: _pageSize,
+      );
+
       if (isClosed) return;
 
       switch (result) {
         case Success<ProductResponseEntity>():
+          final response = result.data;
+          final products = response.list;
+
+          final hasMore = response.total > 0
+              ? products.length < response.total
+              : products.length >= _pageSize;
+
           emit(
             state.copyWith(
               isProductsLoading: false,
-              products: result.data.list,
+              products: products,
+              hasMoreProducts: hasMore,
               clearProductError: true,
             ),
           );
+
         case Error<ProductResponseEntity>():
           emit(
             state.copyWith(
@@ -55,17 +72,78 @@ class HomeCubit extends Cubit<HomeState> {
       }
     } catch (e) {
       if (isClosed) return;
+
       emit(
         state.copyWith(isProductsLoading: false, productError: e.toString()),
       );
     }
   }
 
+  Future<void> loadMoreProducts() async {
+    if (state.isProductsLoading ||
+        state.isLoadingMore ||
+        !state.hasMoreProducts ||
+        state.products.isEmpty) {
+      return;
+    }
+
+    emit(state.copyWith(isLoadingMore: true));
+
+    try {
+      final result = await _getAllProductUseCase.invoke(
+        skip: state.products.length,
+        limit: _pageSize,
+      );
+
+      if (isClosed) return;
+
+      switch (result) {
+        case Success<ProductResponseEntity>():
+          final response = result.data;
+          final existingIds = state.products.map((p) => p.id).toSet();
+
+          final newProducts = response.list
+              .where((product) => !existingIds.contains(product.id))
+              .toList();
+
+          final allProducts = [...state.products, ...newProducts];
+
+          final hasMore = response.total > 0
+              ? allProducts.length < response.total
+              : response.list.length >= _pageSize;
+
+          emit(
+            state.copyWith(
+              isLoadingMore: false,
+              products: allProducts,
+              hasMoreProducts: hasMore,
+              clearProductError: true,
+            ),
+          );
+
+        case Error<ProductResponseEntity>():
+          emit(
+            state.copyWith(
+              isLoadingMore: false,
+              productError: result.messageError,
+            ),
+          );
+      }
+    } catch (e) {
+      if (isClosed) return;
+
+      emit(state.copyWith(isLoadingMore: false, productError: e.toString()));
+    }
+  }
+
   Future<void> _getCategories() async {
+    if (state.isCategoriesLoading) return;
+
     emit(state.copyWith(isCategoriesLoading: true, clearCategoriesError: true));
 
     try {
       final result = await _getAllCategoriesUseCase.invoke();
+
       if (isClosed) return;
 
       switch (result) {
@@ -77,6 +155,7 @@ class HomeCubit extends Cubit<HomeState> {
               clearCategoriesError: true,
             ),
           );
+
         case Error<List<CategoryEntity>>():
           emit(
             state.copyWith(
@@ -87,6 +166,7 @@ class HomeCubit extends Cubit<HomeState> {
       }
     } catch (e) {
       if (isClosed) return;
+
       emit(
         state.copyWith(
           isCategoriesLoading: false,
