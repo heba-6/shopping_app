@@ -1,15 +1,3 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
-// dart format width=80
-
-// **************************************************************************
-// InjectableConfigGenerator
-// **************************************************************************
-
-// ignore_for_file: type=lint
-// coverage:ignore-file
-
-// ignore_for_file: no_leading_underscores_for_library_prefixes
-
 import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
@@ -41,6 +29,17 @@ import '../../features/products_by_category/domain/use_case/get_products_by_cate
     as _i552;
 import '../../features/products_by_category/presentation/view_model/products_by_category_cubit.dart'
     as _i1055;
+import '../../features/search/data/api/search_api.dart' as _i156;
+import '../../features/search/data/repo/data_source/search_data_source_imp.dart'
+    as _i1053;
+import '../../features/search/data/repo/repo/search_repo_imp.dart' as _i811;
+import '../../features/search/domain/repo/search_data_source_interface.dart'
+    as _i477;
+import '../../features/search/domain/repo/search_repo_interface.dart' as _i44;
+import '../../features/search/domain/use_case/search_products_use_case.dart'
+    as _i1047;
+import '../../features/search/presentation/view_model/search_cubit.dart'
+    as _i794;
 import '../networking/auth_interceptor.dart' as _i323;
 import '../storage/token_storage.dart' as _i973;
 
@@ -59,11 +58,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i883.ProductsByCategoryApi>(
       () => _i883.ProductsByCategoryApi(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i156.SearchApi>(() => _i156.SearchApi(gh<_i361.Dio>()));
     gh.lazySingleton<_i323.AuthInterceptor>(
       () => _i323.AuthInterceptor(gh<_i973.TokenStorage>()),
     );
     gh.lazySingleton<_i273.HomeDataSourceInterface>(
       () => _i879.HomeDataSourceImpl(gh<_i168.Api>()),
+    );
+    gh.lazySingleton<_i477.SearchDataSourceInterface>(
+      () => _i1053.SearchDataSourceImp(gh<_i156.SearchApi>()),
     );
     gh.lazySingleton<_i417.ProductsByCategoryDataSourceInterface>(
       () => _i890.ProductsByCategoryDataSourceImpl(
@@ -73,6 +76,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1027.HomeRepoInterface>(
       () => _i1000.HomeRepoImpl(gh<_i273.HomeDataSourceInterface>()),
     );
+    gh.lazySingleton<_i44.SearchRepoInterface>(
+      () => _i811.SearchRepoImp(gh<_i477.SearchDataSourceInterface>()),
+    );
     gh.factory<_i843.GetAllCategoriesUseCase>(
       () => _i843.GetAllCategoriesUseCase(gh<_i1027.HomeRepoInterface>()),
     );
@@ -81,8 +87,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i417.ProductsByCategoryDataSourceInterface>(),
       ),
     );
+    gh.factory<_i1047.SearchProductsUseCase>(
+      () => _i1047.SearchProductsUseCase(gh<_i44.SearchRepoInterface>()),
+    );
     gh.factory<_i206.GetAllProductUseCase>(
       () => _i206.GetAllProductUseCase(gh<_i1027.HomeRepoInterface>()),
+    );
+    gh.factory<_i794.SearchCubit>(
+      () => _i794.SearchCubit(gh<_i1047.SearchProductsUseCase>()),
     );
     gh.factory<_i552.GetProductsByCategoryUseCase>(
       () => _i552.GetProductsByCategoryUseCase(
