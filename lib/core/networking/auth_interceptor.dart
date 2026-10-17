@@ -1,3 +1,6 @@
+
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shopping_app/core/storage/token_storage.dart';
@@ -16,18 +19,31 @@ class AuthInterceptor extends Interceptor {
     try {
       final token = await _tokenStorage.getToken();
 
-      print('TOKEN EXISTS: ${token != null && token.trim().isNotEmpty}');
-      print('TOKEN LENGTH: ${token?.trim().length ?? 0}');
+      final hasToken = token != null && token.trim().isNotEmpty;
 
-      if (token != null && token.trim().isNotEmpty) {
-        options.headers['Authorization'] = 'Bearer ${token.trim()}';
+      log('TOKEN EXISTS: $hasToken');
+      log('TOKEN LENGTH: ${token?.trim().length ?? 0}');
+
+      if (hasToken) {
+        options.headers['Authorization'] = 'Bearer ${token!.trim()}';
       } else {
         options.headers.remove('Authorization');
       }
 
       handler.next(options);
-    } catch (error) {
-      handler.reject(DioException(requestOptions: options, error: error));
+    } catch (error, stackTrace) {
+      log(
+        'Failed to retrieve authentication token',
+        error: error,
+        stackTrace: stackTrace,
+      );
+
+      handler.reject(
+        DioException(
+          requestOptions: options,
+          error: error,
+        ),
+      );
     }
   }
 }
