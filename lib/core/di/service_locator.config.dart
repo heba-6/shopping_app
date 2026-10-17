@@ -11,9 +11,14 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 
 import 'package:dio/dio.dart' as _i361;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../../features/auth/data/repo/auth_repo_imp.dart' as _i39;
+import '../../features/auth/domain/repo/auth_data_source_interface.dart'
+    as _i701;
+import '../../features/auth/domain/repo/auth_repo_interface.dart' as _i389;
 import '../../features/home/data/api/api.dart' as _i168;
 import '../../features/home/data/repo/data_source/home_data_source_imp.dart'
     as _i879;
@@ -41,8 +46,10 @@ import '../../features/products_by_category/domain/use_case/get_products_by_cate
     as _i552;
 import '../../features/products_by_category/presentation/view_model/products_by_category_cubit.dart'
     as _i1055;
+import '../helper/app_secure_storage.dart' as _i236;
 import '../networking/auth_interceptor.dart' as _i323;
 import '../storage/token_storage.dart' as _i973;
+import 'register_modules.dart' as _i8;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -51,9 +58,14 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    final registerModules = _$RegisterModules();
     final networkModule = _$NetworkModule();
+    gh.factory<_i558.FlutterSecureStorage>(() => registerModules.storage);
     gh.lazySingleton<_i973.TokenStorage>(() => _i973.TokenStorage());
     gh.lazySingleton<_i361.Dio>(() => networkModule.dio);
+    gh.lazySingleton<_i236.AppSecureStorage>(
+      () => _i236.AppSecureStorage(gh<_i558.FlutterSecureStorage>()),
+    );
     gh.lazySingleton<_i168.Api>(() => _i168.Api(gh<_i361.Dio>()));
     gh.lazySingleton<_i14.Api>(() => _i14.Api(gh<_i361.Dio>()));
     gh.lazySingleton<_i883.ProductsByCategoryApi>(
@@ -64,6 +76,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i273.HomeDataSourceInterface>(
       () => _i879.HomeDataSourceImpl(gh<_i168.Api>()),
+    );
+    gh.factory<_i389.AuthRepoInterface>(
+      () => _i39.AuthRepoImp(
+        gh<_i701.AuthDataSourceInterface>(),
+        gh<_i236.AppSecureStorage>(),
+      ),
     );
     gh.lazySingleton<_i417.ProductsByCategoryDataSourceInterface>(
       () => _i890.ProductsByCategoryDataSourceImpl(
@@ -103,5 +121,7 @@ extension GetItInjectableX on _i174.GetIt {
     return this;
   }
 }
+
+class _$RegisterModules extends _i8.RegisterModules {}
 
 class _$NetworkModule extends _i168.NetworkModule {}

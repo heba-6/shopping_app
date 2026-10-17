@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shopping_app/core/helper/app_secure_storage.dart';
 import 'package:shopping_app/core/theme/app_colors.dart';
-import 'package:shopping_app/features/app_section/view/app_section_screen.dart';
-import 'package:shopping_app/features/app_section/view_model/app_section_cubit.dart';
+import 'package:shopping_app/features/auth/data/api/auth_api.dart';
+import 'package:shopping_app/features/auth/data/repo/auth_repo_imp.dart';
+import 'package:shopping_app/features/auth/data/repo/data_source/auth_data_source_imp.dart';
+import 'package:shopping_app/features/auth/domain/use_case/login_use_case.dart';
+import 'package:shopping_app/features/auth/presentation/view/screens/login_screen.dart';
 import 'package:shopping_app/features/auth/presentation/view/screens/register_screen.dart';
+import 'package:shopping_app/features/auth/presentation/view_model/login/login_cubit.dart';
 
 class HelloScreen extends StatelessWidget {
   const HelloScreen({super.key});
@@ -58,8 +64,17 @@ class HelloScreen extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => BlocProvider(
-                        create: (context) => AppSectionCubit(),
-                        child: AppSectionScreen(),
+                        create: (context) => LoginCubit(
+                          LoginUseCase(
+                            AuthRepoImp(
+                              AuthDataSourceImp(AuthApi()),
+                              AppSecureStorage(FlutterSecureStorage()),
+                            ),
+                          ),
+                          AppSecureStorage(FlutterSecureStorage()),
+                        ),
+
+                        child: const LoginScreen(),
                       ),
                     ),
                   );

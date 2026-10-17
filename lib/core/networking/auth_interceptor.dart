@@ -37,7 +37,7 @@
 //     }
 //   }
 // }
-
+import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shopping_app/core/storage/token_storage.dart';
@@ -56,8 +56,8 @@ class AuthInterceptor extends Interceptor {
     try {
       final token = await _tokenStorage.getToken();
 
-      print('TOKEN EXISTS: ${token != null && token.trim().isNotEmpty}');
-      print('TOKEN LENGTH: ${token?.trim().length ?? 0}');
+      log('TOKEN EXISTS: ${token != null && token.trim().isNotEmpty}');
+      log('TOKEN LENGTH: ${token?.trim().length ?? 0}');
 
       if (token != null && token.trim().isNotEmpty) {
         options.headers['Authorization'] = 'Bearer ${token.trim()}';
