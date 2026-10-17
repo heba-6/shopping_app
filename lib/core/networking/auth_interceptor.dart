@@ -1,43 +1,6 @@
-// import 'package:dio/dio.dart';
-// import 'package:shopping_app/core/storage/token_storage.dart';
 
-// class AuthInterceptor extends Interceptor {
-//   final TokenStorage _tokenStorage;
-
-//   AuthInterceptor(this._tokenStorage);
-
-//   @override
-//   Future<void> onRequest(
-//     RequestOptions options,
-//     RequestInterceptorHandler handler,
-//   ) async {
-//     try {
-//       final token = await _tokenStorage.getToken();
-
-//       if (token != null && token.trim().isNotEmpty) {
-//         options.headers['Authorization'] = 'Bearer ${token.trim()}';
-
-//         print('TOKEN EXISTS: true');
-//         print('TOKEN LENGTH: ${token.trim().length}');
-//       } else {
-//         options.headers.remove('Authorization');
-//         print('TOKEN EXISTS: false');
-//       }
-
-//       print(
-//         'AUTH HEADER ADDED: '
-//         '${options.headers.containsKey('Authorization')}',
-//       );
-
-//       handler.next(options);
-//     } catch (error) {
-//       print('TOKEN ERROR: $error');
-
-//       handler.reject(DioException(requestOptions: options, error: error));
-//     }
-//   }
-// }
 import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shopping_app/core/storage/token_storage.dart';
@@ -56,18 +19,31 @@ class AuthInterceptor extends Interceptor {
     try {
       final token = await _tokenStorage.getToken();
 
-      log('TOKEN EXISTS: ${token != null && token.trim().isNotEmpty}');
+      final hasToken = token != null && token.trim().isNotEmpty;
+
+      log('TOKEN EXISTS: $hasToken');
       log('TOKEN LENGTH: ${token?.trim().length ?? 0}');
 
-      if (token != null && token.trim().isNotEmpty) {
-        options.headers['Authorization'] = 'Bearer ${token.trim()}';
+      if (hasToken) {
+        options.headers['Authorization'] = 'Bearer ${token!.trim()}';
       } else {
         options.headers.remove('Authorization');
       }
 
       handler.next(options);
-    } catch (error) {
-      handler.reject(DioException(requestOptions: options, error: error));
+    } catch (error, stackTrace) {
+      log(
+        'Failed to retrieve authentication token',
+        error: error,
+        stackTrace: stackTrace,
+      );
+
+      handler.reject(
+        DioException(
+          requestOptions: options,
+          error: error,
+        ),
+      );
     }
   }
 }
