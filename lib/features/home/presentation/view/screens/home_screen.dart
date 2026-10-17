@@ -7,6 +7,9 @@ import 'package:shopping_app/features/home/domain/entities/category_entity.dart'
 import 'package:shopping_app/features/home/presentation/view_model/home_cubit.dart';
 import 'package:shopping_app/features/home/presentation/view/widgets/categories_widget.dart';
 import 'package:shopping_app/features/products_by_category/presentation/view/screens/products_by_category_screen.dart';
+import 'package:shopping_app/features/search/presentation/view/screens/search_screen.dart';
+import 'package:shopping_app/features/search/presentation/view_model/search_cubit.dart';
+import 'package:shopping_app/core/di/service_locator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -55,12 +58,48 @@ class _HomeScreenState extends State<HomeScreen>
     super.build(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Shopping App'), centerTitle: false),
+      appBar: AppBar(toolbarHeight: 0, elevation: 0),
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+
             children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                child: TextField(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => BlocProvider(
+                          create: (_) => serviceLocator<SearchCubit>(),
+                          child: const SearchScreen(),
+                        ),
+                      ),
+                    );
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Search for products...',
+                    hintStyle: const TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(
+                        color: Color(0xFFD1D5DB),
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
               const SizedBox(height: 12),
 
               if (state.isCategoriesLoading && state.categories.isEmpty)

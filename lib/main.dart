@@ -11,6 +11,8 @@ import 'package:shopping_app/features/auth/presentation/view/screens/hello_scree
 import 'package:shopping_app/features/home/presentation/view/screens/home_screen.dart';
 import 'package:shopping_app/features/home/presentation/view_model/home_cubit.dart';
 import 'package:shopping_app/features/onboarding/presentation/view/screens/onboarding_screen.dart';
+import 'package:shopping_app/features/search/presentation/view/screens/search_screen.dart';
+import 'package:shopping_app/features/search/presentation/view_model/search_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,6 +53,11 @@ class MyApp extends StatelessWidget {
           create: (context) => serviceLocator<HomeCubit>(),
           child: const Scaffold(body: SafeArea(child: HomeScreen())),
         ),
+        RoutesManager.search: (context) => BlocProvider(
+          create: (context) => serviceLocator<SearchCubit>(),
+          child: const SearchScreen(),
+        ),
+
         RoutesManager.appSection: (context) => BlocProvider(
           create: (context) => AppSectionCubit(),
           child: AppSectionScreen(),
