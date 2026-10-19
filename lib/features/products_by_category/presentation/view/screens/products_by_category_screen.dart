@@ -9,13 +9,11 @@ import 'package:shopping_app/features/products_by_category/presentation/view_mod
 class ProductsByCategoryScreen extends StatefulWidget {
   final String slug;
   final String categoryName;
-
   const ProductsByCategoryScreen({
     super.key,
     required this.slug,
     required this.categoryName,
   });
-
   @override
   State<ProductsByCategoryScreen> createState() =>
       _ProductsByCategoryScreenState();
@@ -25,14 +23,11 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen>
     with AutomaticKeepAliveClientMixin {
   late final ProductsByCategoryCubit _cubit;
   late final ScrollController _scrollController;
-
   @override
   bool get wantKeepAlive => true;
-
   @override
   void initState() {
     super.initState();
-
     _cubit = serviceLocator<ProductsByCategoryCubit>();
     _scrollController = ScrollController();
 
@@ -43,7 +38,6 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen>
 
   void _onScroll() {
     if (!_scrollController.hasClients) return;
-
     if (_scrollController.position.extentAfter < 300) {
       _cubit.loadMoreProducts();
     }
@@ -60,7 +54,6 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
     return BlocProvider.value(
       value: _cubit,
       child: Scaffold(

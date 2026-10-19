@@ -13,6 +13,7 @@ class CustomButon extends StatelessWidget {
     this.gradientColor1,
     this.gradientColor2,
     this.height,
+    this.color,
   });
   final double? height;
   final String title;
@@ -22,7 +23,7 @@ class CustomButon extends StatelessWidget {
   final Color? shadowColor;
   final Color? gradientColor1;
   final Color? gradientColor2;
-
+  final Color? color;
   final void Function()? onTap;
 
   @override
@@ -35,7 +36,7 @@ class CustomButon extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 12),
 
         decoration: BoxDecoration(
-          color: AppColors.red,
+          color: color,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: borderColor ?? Colors.transparent,
@@ -49,14 +50,16 @@ class CustomButon extends StatelessWidget {
               offset: Offset(0, 4),
             ),
           ],
-          gradient: LinearGradient(
-            colors: [
-              gradientColor1 ?? AppColors.primaryOrange,
-              gradientColor2 ?? AppColors.orangeLight,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          gradient: color != null
+              ? null
+              : LinearGradient(
+                  colors: [
+                    gradientColor1 ?? AppColors.primaryOrange,
+                    gradientColor2 ?? AppColors.orangeLight,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
         ),
         child: Text(
           title,

@@ -16,7 +16,6 @@ class ProductsByCategoryApi {
       '/home/products/category/$slug',
       queryParameters: {'skip': skip, 'limit': limit},
     );
-
     if (response.data == null) {
       throw Exception('The API returned an empty response');
     }
