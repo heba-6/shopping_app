@@ -1,7 +1,7 @@
 import 'package:shopping_app/core/networking/result_api.dart';
 import 'package:shopping_app/features/auth/domain/entities/login_response_entity.dart';
 
-abstract class AuthRepoInterface {
+abstract interface class AuthRepoInterface {
   Future<ResultApi<LoginResponseEntity>> login({
     required String email,
     required String password,

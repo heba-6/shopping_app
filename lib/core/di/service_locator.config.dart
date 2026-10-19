@@ -1,19 +1,13 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
-// dart format width=80
-
-// **************************************************************************
-// InjectableConfigGenerator
-// **************************************************************************
-
-// ignore_for_file: type=lint
-// coverage:ignore-file
-
-// ignore_for_file: no_leading_underscores_for_library_prefixes
 
 import 'package:dio/dio.dart' as _i361;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../../features/auth/data/repo/auth_repo_imp.dart' as _i39;
+import '../../features/auth/domain/repo/auth_data_source_interface.dart'
+    as _i701;
+import '../../features/auth/domain/repo/auth_repo_interface.dart' as _i389;
 import '../../features/home/data/api/api.dart' as _i168;
 import '../../features/home/data/repo/data_source/home_data_source_imp.dart'
     as _i879;
@@ -41,67 +35,151 @@ import '../../features/products_by_category/domain/use_case/get_products_by_cate
     as _i552;
 import '../../features/products_by_category/presentation/view_model/products_by_category_cubit.dart'
     as _i1055;
+import '../../features/search/data/api/search_api.dart' as _i156;
+import '../../features/search/data/repo/data_source/search_data_source_imp.dart'
+    as _i1053;
+import '../../features/search/data/repo/repo/search_repo_imp.dart' as _i811;
+import '../../features/search/domain/repo/search_data_source_interface.dart'
+    as _i477;
+import '../../features/search/domain/repo/search_repo_interface.dart' as _i44;
+import '../../features/search/domain/use_case/search_products_use_case.dart'
+    as _i1047;
+import '../../features/search/presentation/view_model/search_cubit.dart'
+    as _i794;
+import '../helper/app_secure_storage.dart' as _i236;
 import '../networking/auth_interceptor.dart' as _i323;
 import '../storage/token_storage.dart' as _i973;
+import 'register_modules.dart' as _i8;
 
 extension GetItInjectableX on _i174.GetIt {
-  // initializes the registration of main-scope dependencies inside of GetIt
   _i174.GetIt init({
     String? environment,
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    final registerModules = _$RegisterModules();
     final networkModule = _$NetworkModule();
-    gh.lazySingleton<_i973.TokenStorage>(() => _i973.TokenStorage());
-    gh.lazySingleton<_i361.Dio>(() => networkModule.dio);
-    gh.lazySingleton<_i168.Api>(() => _i168.Api(gh<_i361.Dio>()));
-    gh.lazySingleton<_i14.Api>(() => _i14.Api(gh<_i361.Dio>()));
+
+    gh.factory<_i558.FlutterSecureStorage>(
+      () => registerModules.storage,
+    );
+
+    gh.lazySingleton<_i973.TokenStorage>(
+      () => _i973.TokenStorage(),
+    );
+
+    gh.lazySingleton<_i361.Dio>(
+      () => networkModule.dio,
+    );
+
+    gh.lazySingleton<_i236.AppSecureStorage>(
+      () => _i236.AppSecureStorage(
+        gh<_i558.FlutterSecureStorage>(),
+      ),
+    );
+
+    gh.lazySingleton<_i168.Api>(
+      () => _i168.Api(gh<_i361.Dio>()),
+    );
+
+    gh.lazySingleton<_i14.Api>(
+      () => _i14.Api(gh<_i361.Dio>()),
+    );
+
     gh.lazySingleton<_i883.ProductsByCategoryApi>(
       () => _i883.ProductsByCategoryApi(gh<_i361.Dio>()),
     );
+
+    gh.lazySingleton<_i156.SearchApi>(
+      () => _i156.SearchApi(gh<_i361.Dio>()),
+    );
+
     gh.lazySingleton<_i323.AuthInterceptor>(
       () => _i323.AuthInterceptor(gh<_i973.TokenStorage>()),
     );
+
     gh.lazySingleton<_i273.HomeDataSourceInterface>(
       () => _i879.HomeDataSourceImpl(gh<_i168.Api>()),
     );
+
+    gh.factory<_i389.AuthRepoInterface>(
+      () => _i39.AuthRepoImp(
+        gh<_i701.AuthDataSourceInterface>(),
+        gh<_i236.AppSecureStorage>(),
+      ),
+    );
+
+    gh.lazySingleton<_i477.SearchDataSourceInterface>(
+      () => _i1053.SearchDataSourceImp(
+        gh<_i156.SearchApi>(),
+      ),
+    );
+
     gh.lazySingleton<_i417.ProductsByCategoryDataSourceInterface>(
       () => _i890.ProductsByCategoryDataSourceImpl(
         gh<_i883.ProductsByCategoryApi>(),
       ),
     );
+
     gh.factory<_i1027.HomeRepoInterface>(
-      () => _i1000.HomeRepoImpl(gh<_i273.HomeDataSourceInterface>()),
-    );
-    gh.factory<_i843.GetAllCategoriesUseCase>(
-      () => _i843.GetAllCategoriesUseCase(gh<_i1027.HomeRepoInterface>()),
-    );
-    gh.lazySingleton<_i65.ProductsByCategoryRepoInterface>(
-      () => _i459.ProductsByCategoryRepoImpl(
-        gh<_i417.ProductsByCategoryDataSourceInterface>(),
+      () => _i1000.HomeRepoImpl(
+        gh<_i273.HomeDataSourceInterface>(),
       ),
     );
-    gh.factory<_i206.GetAllProductUseCase>(
-      () => _i206.GetAllProductUseCase(gh<_i1027.HomeRepoInterface>()),
+
+    gh.lazySingleton<_i44.SearchRepoInterface>(
+      () => _i811.SearchRepoImp(
+        gh<_i477.SearchDataSourceInterface>(),
+      ),
     );
+
+    gh.factory<_i843.GetAllCategoriesUseCase>(
+      () => _i843.GetAllCategoriesUseCase(
+        gh<_i1027.HomeRepoInterface>(),
+      ),
+    );
+
+    gh.factory<_i1047.SearchProductsUseCase>(
+      () => _i1047.SearchProductsUseCase(
+        gh<_i44.SearchRepoInterface>(),
+      ),
+    );
+
+    gh.factory<_i206.GetAllProductUseCase>(
+      () => _i206.GetAllProductUseCase(
+        gh<_i1027.HomeRepoInterface>(),
+      ),
+    );
+
+    gh.factory<_i794.SearchCubit>(
+      () => _i794.SearchCubit(
+        gh<_i1047.SearchProductsUseCase>(),
+      ),
+    );
+
     gh.factory<_i552.GetProductsByCategoryUseCase>(
       () => _i552.GetProductsByCategoryUseCase(
         repo: gh<_i65.ProductsByCategoryRepoInterface>(),
       ),
     );
+
     gh.factory<_i1055.ProductsByCategoryCubit>(
       () => _i1055.ProductsByCategoryCubit(
         gh<_i552.GetProductsByCategoryUseCase>(),
       ),
     );
+
     gh.factory<_i940.HomeCubit>(
       () => _i940.HomeCubit(
         gh<_i206.GetAllProductUseCase>(),
         gh<_i843.GetAllCategoriesUseCase>(),
       ),
     );
+
     return this;
   }
 }
+
+class _$RegisterModules extends _i8.RegisterModules {}
 
 class _$NetworkModule extends _i168.NetworkModule {}

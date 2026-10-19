@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'dart:developer';
 import 'package:injectable/injectable.dart';
 import 'package:shopping_app/core/networking/auth_interceptor.dart';
 import 'package:shopping_app/core/storage/token_storage.dart';
@@ -44,8 +45,8 @@ class Api {
 
       return response.data!;
     } on DioException catch (e) {
-      print('Products status: ${e.response?.statusCode}');
-      print('Products response: ${e.response?.data}');
+      log('Products status: ${e.response?.statusCode}');
+      log('Products response: ${e.response?.data}');
       rethrow;
     }
   }
@@ -60,8 +61,8 @@ class Api {
 
       return response.data!;
     } on DioException catch (e) {
-      print('Categories status: ${e.response?.statusCode}');
-      print('Categories response: ${e.response?.data}');
+      log('Categories status: ${e.response?.statusCode}');
+      log('Categories response: ${e.response?.data}');
       rethrow;
     }
   }
