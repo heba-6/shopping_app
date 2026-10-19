@@ -21,7 +21,7 @@ class AppSectionScreen extends StatelessWidget {
         child: const HomeScreen(),
       ),
       const CartScreen(),
-      const FavoriteScreen(),
+      const FavouriteScreen(),
       const AccountScreen(),
     ];
 

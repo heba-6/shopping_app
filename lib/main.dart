@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:shopping_app/core/di/service_locator.dart';
 import 'package:shopping_app/core/helper/app_secure_storage.dart';
 import 'package:shopping_app/core/route/app_route.dart';
-import 'package:shopping_app/core/route/initial_route.dart';
-import 'package:shopping_app/core/utils/my_bloc_observer.dart';
+import 'package:shopping_app/core/storage/token_storage.dart';
 import 'package:shopping_app/features/app_section/view/app_section_screen.dart';
 import 'package:shopping_app/features/app_section/view_model/app_section_cubit.dart';
 import 'package:shopping_app/features/auth/data/api/auth_api.dart';
@@ -27,11 +27,20 @@ void main() async {
 
   configureDependencies();
 
-  Bloc.observer = MyBlocObserver();
+  await TokenStorage().saveToken(
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhYzU5MjNjYjMwZmIxZjQ3OGViYjI4YSIsImlhdCI6MTc5MTY1MTA0NSwiZXhwIjoxNzk0MjQzMDQ1fQ.j4AOpvVMlcskmgBfRNhqz2bPZRaWKYUmLtqWn6B1OK8',
+  );
 
-  final initRoute = await initialRoute();
+  final prefs = await SharedPreferences.getInstance();
+  final bool seenOnboarding = prefs.getBool('seenOnboarding') ?? false;
 
-  runApp(MyApp(initialRoute: initRoute));
+  runApp(
+    MyApp(
+      initialRoute: seenOnboarding
+          ? RoutesManager.hello
+          : RoutesManager.onBoarding,
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
