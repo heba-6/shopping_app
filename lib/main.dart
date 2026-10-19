@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -11,7 +10,7 @@ import 'package:shopping_app/core/utils/my_bloc_observer.dart';
 import 'package:shopping_app/features/app_section/view/app_section_screen.dart';
 import 'package:shopping_app/features/app_section/view_model/app_section_cubit.dart';
 import 'package:shopping_app/features/auth/data/api/auth_api.dart';
-import 'package:shopping_app/features/auth/data/repo/auth_repo_imp.dart';
+import 'package:shopping_app/features/auth/data/repo/repo/auth_repo_imp.dart';
 import 'package:shopping_app/features/auth/data/repo/data_source/auth_data_source_imp.dart';
 import 'package:shopping_app/features/auth/domain/use_case/login_use_case.dart';
 import 'package:shopping_app/features/auth/presentation/view/screens/hello_screen.dart';
@@ -49,39 +48,30 @@ class MyApp extends StatelessWidget {
         RoutesManager.onBoarding: (context) => const OnboardingScreen(),
         RoutesManager.hello: (context) => const HelloScreen(),
         RoutesManager.home: (context) => BlocProvider(
-              create: (_) => serviceLocator<HomeCubit>(),
-              child: const Scaffold(
-                body: SafeArea(
-                  child: HomeScreen(),
-                ),
-              ),
-            ),
+          create: (_) => serviceLocator<HomeCubit>(),
+          child: const Scaffold(body: SafeArea(child: HomeScreen())),
+        ),
         RoutesManager.search: (context) => BlocProvider(
-              create: (_) => serviceLocator<SearchCubit>(),
-              child: const SearchScreen(),
-            ),
+          create: (_) => serviceLocator<SearchCubit>(),
+          child: const SearchScreen(),
+        ),
         RoutesManager.appSection: (context) => BlocProvider(
-              create: (_) => AppSectionCubit(),
-              child: AppSectionScreen(),
-            ),
+          create: (_) => AppSectionCubit(),
+          child: AppSectionScreen(),
+        ),
         RoutesManager.login: (context) => BlocProvider(
-              create: (_) {
-                final appStorage = AppSecureStorage(
-                  const FlutterSecureStorage(),
-                );
+          create: (_) {
+            final appStorage = AppSecureStorage(const FlutterSecureStorage());
 
-                return LoginCubit(
-                  LoginUseCase(
-                    AuthRepoImp(
-                      AuthDataSourceImp(AuthApi()),
-                      appStorage,
-                    ),
-                  ),
-                  appStorage,
-                );
-              },
-              child: LoginScreen(),
-            ),
+            return LoginCubit(
+              LoginUseCase(
+                AuthRepoImp(AuthDataSourceImp(AuthApi()), appStorage),
+              ),
+              appStorage,
+            );
+          },
+          child: LoginScreen(),
+        ),
       },
     );
   }
