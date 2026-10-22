@@ -1,10 +1,9 @@
-
 import 'package:dio/dio.dart' as _i361;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
-import '../../features/auth/data/repo/auth_repo_imp.dart' as _i39;
+import '../../features/auth/data/repo/repo/auth_repo_imp.dart' as _i39;
 import '../../features/auth/domain/repo/auth_data_source_interface.dart'
     as _i701;
 import '../../features/auth/domain/repo/auth_repo_interface.dart' as _i389;
@@ -60,39 +59,25 @@ extension GetItInjectableX on _i174.GetIt {
     final registerModules = _$RegisterModules();
     final networkModule = _$NetworkModule();
 
-    gh.factory<_i558.FlutterSecureStorage>(
-      () => registerModules.storage,
-    );
+    gh.factory<_i558.FlutterSecureStorage>(() => registerModules.storage);
 
-    gh.lazySingleton<_i973.TokenStorage>(
-      () => _i973.TokenStorage(),
-    );
+    gh.lazySingleton<_i973.TokenStorage>(() => _i973.TokenStorage());
 
-    gh.lazySingleton<_i361.Dio>(
-      () => networkModule.dio,
-    );
+    gh.lazySingleton<_i361.Dio>(() => networkModule.dio);
 
     gh.lazySingleton<_i236.AppSecureStorage>(
-      () => _i236.AppSecureStorage(
-        gh<_i558.FlutterSecureStorage>(),
-      ),
+      () => _i236.AppSecureStorage(gh<_i558.FlutterSecureStorage>()),
     );
 
-    gh.lazySingleton<_i168.Api>(
-      () => _i168.Api(gh<_i361.Dio>()),
-    );
+    gh.lazySingleton<_i168.Api>(() => _i168.Api(gh<_i361.Dio>()));
 
-    gh.lazySingleton<_i14.Api>(
-      () => _i14.Api(gh<_i361.Dio>()),
-    );
+    gh.lazySingleton<_i14.Api>(() => _i14.Api(gh<_i361.Dio>()));
 
     gh.lazySingleton<_i883.ProductsByCategoryApi>(
       () => _i883.ProductsByCategoryApi(gh<_i361.Dio>()),
     );
 
-    gh.lazySingleton<_i156.SearchApi>(
-      () => _i156.SearchApi(gh<_i361.Dio>()),
-    );
+    gh.lazySingleton<_i156.SearchApi>(() => _i156.SearchApi(gh<_i361.Dio>()));
 
     gh.lazySingleton<_i323.AuthInterceptor>(
       () => _i323.AuthInterceptor(gh<_i973.TokenStorage>()),
@@ -110,9 +95,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
 
     gh.lazySingleton<_i477.SearchDataSourceInterface>(
-      () => _i1053.SearchDataSourceImp(
-        gh<_i156.SearchApi>(),
-      ),
+      () => _i1053.SearchDataSourceImp(gh<_i156.SearchApi>()),
     );
 
     gh.lazySingleton<_i417.ProductsByCategoryDataSourceInterface>(
@@ -122,39 +105,27 @@ extension GetItInjectableX on _i174.GetIt {
     );
 
     gh.factory<_i1027.HomeRepoInterface>(
-      () => _i1000.HomeRepoImpl(
-        gh<_i273.HomeDataSourceInterface>(),
-      ),
+      () => _i1000.HomeRepoImpl(gh<_i273.HomeDataSourceInterface>()),
     );
 
     gh.lazySingleton<_i44.SearchRepoInterface>(
-      () => _i811.SearchRepoImp(
-        gh<_i477.SearchDataSourceInterface>(),
-      ),
+      () => _i811.SearchRepoImp(gh<_i477.SearchDataSourceInterface>()),
     );
 
     gh.factory<_i843.GetAllCategoriesUseCase>(
-      () => _i843.GetAllCategoriesUseCase(
-        gh<_i1027.HomeRepoInterface>(),
-      ),
+      () => _i843.GetAllCategoriesUseCase(gh<_i1027.HomeRepoInterface>()),
     );
 
     gh.factory<_i1047.SearchProductsUseCase>(
-      () => _i1047.SearchProductsUseCase(
-        gh<_i44.SearchRepoInterface>(),
-      ),
+      () => _i1047.SearchProductsUseCase(gh<_i44.SearchRepoInterface>()),
     );
 
     gh.factory<_i206.GetAllProductUseCase>(
-      () => _i206.GetAllProductUseCase(
-        gh<_i1027.HomeRepoInterface>(),
-      ),
+      () => _i206.GetAllProductUseCase(gh<_i1027.HomeRepoInterface>()),
     );
 
     gh.factory<_i794.SearchCubit>(
-      () => _i794.SearchCubit(
-        gh<_i1047.SearchProductsUseCase>(),
-      ),
+      () => _i794.SearchCubit(gh<_i1047.SearchProductsUseCase>()),
     );
 
     gh.factory<_i552.GetProductsByCategoryUseCase>(

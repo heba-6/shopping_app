@@ -4,7 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shopping_app/core/helper/app_secure_storage.dart';
 import 'package:shopping_app/core/theme/app_colors.dart';
 import 'package:shopping_app/features/auth/data/api/auth_api.dart';
-import 'package:shopping_app/features/auth/data/repo/auth_repo_imp.dart';
+import 'package:shopping_app/features/auth/data/repo/repo/auth_repo_imp.dart';
 import 'package:shopping_app/features/auth/data/repo/data_source/auth_data_source_imp.dart';
 import 'package:shopping_app/features/auth/domain/use_case/login_use_case.dart';
 import 'package:shopping_app/features/auth/presentation/view/screens/login_screen.dart';
