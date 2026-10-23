@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:shopping_app/core/di/service_locator.dart';
+import 'package:shopping_app/features/account/presentation/view_model/account_cubit.dart';
 import 'package:shopping_app/features/app_section/view_model/app_section_cubit.dart';
 import 'package:shopping_app/features/app_section/view_model/app_section_state.dart';
 import 'package:shopping_app/features/home/presentation/view/screens/home_screen.dart';
@@ -22,7 +23,10 @@ class AppSectionScreen extends StatelessWidget {
       ),
       const CartScreen(),
       const FavouriteScreen(),
-      const AccountScreen(),
+      BlocProvider(
+        create: (context) => serviceLocator<AccountCubit>(),
+        child: AccountScreen(),
+      ),
     ];
 
     return BlocBuilder<AppSectionCubit, AppSectionState>(

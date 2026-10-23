@@ -5,8 +5,6 @@ import 'package:shopping_app/core/theme/app_colors.dart';
 import 'package:shopping_app/core/utils/app_dialog.dart';
 import 'package:shopping_app/core/widgets/custom_button.dart';
 import 'package:shopping_app/core/widgets/custom_text_field.dart';
-import 'package:shopping_app/features/app_section/view/app_section_screen.dart';
-import 'package:shopping_app/features/app_section/view_model/app_section_cubit.dart';
 import 'package:shopping_app/features/auth/presentation/view/screens/register_screen.dart';
 import 'package:shopping_app/features/auth/presentation/view_model/login/login_cubit.dart';
 
@@ -121,12 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => BlocProvider(
-                  create: (_) => AppSectionCubit(),
-                  child: AppSectionScreen(),
-                ),
-              ),
+              MaterialPageRoute(builder: (context) => const RegisterScreen()),
             );
           },
           child: Text.rich(
