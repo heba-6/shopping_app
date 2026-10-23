@@ -236,26 +236,15 @@ class CategoriesSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 48,
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        scrollDirection: Axis.horizontal,
-        itemCount: 5,
-        separatorBuilder: (context, index) => const SizedBox(width: 8),
-        itemBuilder: (context, index) {
-          return const SkeletonBox(width: 90, height: 40, radius: 20);
-        },
-      ),
+    final Product = ProductsEntity(
+      id: 1,
+      title: "title",
+      description: "This is a detailed description of the product.",
+      price: 150,
+      discount: 12.5,
+      rating: 4.7,
+      image: [AssetsImages.onboarding_1],
     );
-  }
-}
-
-class ProductsSkeleton extends StatelessWidget {
-  const ProductsSkeleton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: 6,
@@ -265,92 +254,12 @@ class ProductsSkeleton extends StatelessWidget {
         mainAxisSpacing: 18,
         childAspectRatio: 163 / 288,
       ),
-      itemBuilder: (context, index) {
-        return const ProductSkeletonCard();
-      },
-    );
-  }
-}
-
-class ProductSkeletonCard extends StatelessWidget {
-  const ProductSkeletonCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Expanded(
-          flex: 6,
-          child: SkeletonBox(width: double.infinity, radius: 12),
-        ),
-        const SizedBox(height: 10),
-        const SkeletonBox(width: 110, height: 14, radius: 4),
-        const SizedBox(height: 8),
-        const SkeletonBox(width: 70, height: 12, radius: 4),
-        const SizedBox(height: 8),
-        const SkeletonBox(width: 85, height: 16, radius: 4),
-        const SizedBox(height: 10),
-        const SkeletonBox(width: double.infinity, height: 34, radius: 8),
-      ],
-    );
-  }
-}
-
-class SkeletonBox extends StatefulWidget {
-  final double width;
-  final double? height;
-  final double radius;
-
-  const SkeletonBox({
-    super.key,
-    required this.width,
-    this.height,
-    this.radius = 8,
-  });
-
-  @override
-  State<SkeletonBox> createState() => _SkeletonBoxState();
-}
-
-class _SkeletonBoxState extends State<SkeletonBox>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 900),
-    )..repeat(reverse: true);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Container(
-          width: widget.width,
-          height: widget.height,
-          decoration: BoxDecoration(
-            color: Color.lerp(
-              const Color(0xFFE5E7EB),
-              const Color(0xFFF5F5F5),
-              _controller.value,
-            ),
-            borderRadius: BorderRadius.circular(widget.radius),
-          ),
-        );
-      },
+      itemBuilder: (context, index) => ProductItemCard(
+        product: Product,
+        onTap: () {},
+        favoriteOnTap: () {},
+        addToCartOnTap: () {},
+      ),
     );
   }
 }

@@ -15,6 +15,20 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../../features/account/data/api/account_api.dart' as _i493;
+import '../../features/account/data/repo/data_source/data_source_imp.dart'
+    as _i363;
+import '../../features/account/data/repo/repo/repo_imp.dart' as _i530;
+import '../../features/account/domain/repo/account_data_source_interface.dart'
+    as _i806;
+import '../../features/account/domain/repo/account_repo_interface.dart'
+    as _i684;
+import '../../features/account/domain/use_case/get_user_profile_use_case.dart'
+    as _i507;
+import '../../features/account/domain/use_case/update_user_profile_use_case.dart'
+    as _i779;
+import '../../features/account/presentation/view_model/account_cubit.dart'
+    as _i802;
 import '../../features/auth/data/api/auth_api.dart' as _i302;
 import '../../features/auth/data/api/register_api.dart' as _i403;
 import '../../features/auth/data/repo/data_source/auth_data_source_imp.dart'
@@ -26,6 +40,17 @@ import '../../features/auth/domain/repo/auth_data_source_interface.dart'
 import '../../features/auth/domain/repo/auth_repo_interface.dart' as _i389;
 import '../../features/auth/presentation/view_model/register/register_cubit.dart'
     as _i70;
+import '../../features/cart/data/api/cart_api.dart' as _i209;
+import '../../features/cart/data/repo/data_source/cart_data_source_imp.dart'
+    as _i199;
+import '../../features/cart/data/repo/repo/cart_repo_imp.dart' as _i324;
+import '../../features/cart/domain/repo/cart_data_source_interface.dart'
+    as _i1034;
+import '../../features/cart/domain/repo/cart_repo_interface.dart' as _i76;
+import '../../features/cart/domain/use_case/add_to_cart_use_case.dart' as _i956;
+import '../../features/cart/domain/use_case/delete_cart_item_use_case.dart'
+    as _i903;
+import '../../features/cart/domain/use_case/get_cart_use_case.dart' as _i38;
 import '../../features/favourite/data/api/favourite_api.dart' as _i491;
 import '../../features/favourite/data/repo/data_source/favourite_data_source_imp.dart'
     as _i384;
@@ -84,6 +109,7 @@ import '../../features/search/presentation/view_model/search_cubit.dart'
 import '../helper/app_secure_storage.dart' as _i236;
 import '../networking/auth_interceptor.dart' as _i323;
 import '../storage/token_storage.dart' as _i973;
+import 'network_module.dart' as _i567;
 import 'register_modules.dart' as _i8;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -96,15 +122,17 @@ extension GetItInjectableX on _i174.GetIt {
     final registerModules = _$RegisterModules();
     final networkModule = _$NetworkModule();
     gh.factory<_i558.FlutterSecureStorage>(() => registerModules.storage);
+    gh.lazySingleton<_i361.Dio>(() => networkModule.dio);
     gh.lazySingleton<_i973.TokenStorage>(() => _i973.TokenStorage());
     gh.lazySingleton<_i302.AuthApi>(() => _i302.AuthApi());
-    gh.lazySingleton<_i361.Dio>(() => networkModule.dio);
     gh.lazySingleton<_i236.AppSecureStorage>(
       () => _i236.AppSecureStorage(gh<_i558.FlutterSecureStorage>()),
     );
+    gh.lazySingleton<_i493.AccountApi>(() => _i493.AccountApi(gh<_i361.Dio>()));
     gh.lazySingleton<_i403.RegisterApi>(
       () => _i403.RegisterApi(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i209.CartApi>(() => _i209.CartApi(gh<_i361.Dio>()));
     gh.lazySingleton<_i491.FavouriteApi>(
       () => _i491.FavouriteApi(gh<_i361.Dio>()),
     );
@@ -114,6 +142,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i883.ProductsByCategoryApi(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i156.SearchApi>(() => _i156.SearchApi(gh<_i361.Dio>()));
+    gh.lazySingleton<_i806.AccountDataSourceInterface>(
+      () => _i363.AccountDataSourceImpl(gh<_i493.AccountApi>()),
+    );
     gh.factory<_i701.AuthDataSourceInterface>(
       () => _i477.AuthDataSourceImp(gh<_i302.AuthApi>()),
     );
@@ -137,6 +168,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i171.FavouriteRepoInterface>(
       () => _i149.FavouriteRepoImp(gh<_i215.FavouriteDataSourceInterface>()),
+    );
+    gh.lazySingleton<_i684.AccountRepoInterface>(
+      () => _i530.AccountRepoImpl(gh<_i806.AccountDataSourceInterface>()),
     );
     gh.lazySingleton<_i477.SearchDataSourceInterface>(
       () => _i1053.SearchDataSourceImp(gh<_i156.SearchApi>()),
@@ -162,6 +196,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i883.ProductsByCategoryApi>(),
       ),
     );
+    gh.factory<_i1034.CartDataSourceInterface>(
+      () => _i199.CartDataSourceImp(gh<_i209.CartApi>()),
+    );
     gh.factory<_i1027.HomeRepoInterface>(
       () => _i1000.HomeRepoImpl(gh<_i273.HomeDataSourceInterface>()),
     );
@@ -171,8 +208,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i843.GetAllCategoriesUseCase>(
       () => _i843.GetAllCategoriesUseCase(gh<_i1027.HomeRepoInterface>()),
     );
+    gh.factory<_i507.GetUserProfileUseCase>(
+      () => _i507.GetUserProfileUseCase(gh<_i684.AccountRepoInterface>()),
+    );
+    gh.factory<_i779.UpdateUserProfileUseCase>(
+      () => _i779.UpdateUserProfileUseCase(gh<_i684.AccountRepoInterface>()),
+    );
     gh.factory<_i70.RegisterCubit>(
       () => _i70.RegisterCubit(gh<_i395.RegisterRepo>()),
+    );
+    gh.factory<_i76.CartRepoInterface>(
+      () => _i324.CartRepoImp(gh<_i1034.CartDataSourceInterface>()),
     );
     gh.lazySingleton<_i65.ProductsByCategoryRepoInterface>(
       () => _i459.ProductsByCategoryRepoImpl(
@@ -185,12 +231,27 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i206.GetAllProductUseCase>(
       () => _i206.GetAllProductUseCase(gh<_i1027.HomeRepoInterface>()),
     );
+    gh.factory<_i956.AddToCartUseCase>(
+      () => _i956.AddToCartUseCase(gh<_i76.CartRepoInterface>()),
+    );
+    gh.factory<_i903.DeleteCartItemUseCase>(
+      () => _i903.DeleteCartItemUseCase(gh<_i76.CartRepoInterface>()),
+    );
+    gh.factory<_i38.GetCartUseCase>(
+      () => _i38.GetCartUseCase(gh<_i76.CartRepoInterface>()),
+    );
     gh.factory<_i794.SearchCubit>(
       () => _i794.SearchCubit(gh<_i1047.SearchProductsUseCase>()),
     );
     gh.factory<_i552.GetProductsByCategoryUseCase>(
       () => _i552.GetProductsByCategoryUseCase(
         repo: gh<_i65.ProductsByCategoryRepoInterface>(),
+      ),
+    );
+    gh.factory<_i802.AccountCubit>(
+      () => _i802.AccountCubit(
+        gh<_i507.GetUserProfileUseCase>(),
+        gh<_i779.UpdateUserProfileUseCase>(),
       ),
     );
     gh.factory<_i1055.ProductsByCategoryCubit>(
@@ -210,4 +271,4 @@ extension GetItInjectableX on _i174.GetIt {
 
 class _$RegisterModules extends _i8.RegisterModules {}
 
-class _$NetworkModule extends _i168.NetworkModule {}
+class _$NetworkModule extends _i567.NetworkModule {}
