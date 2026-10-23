@@ -1,8 +1,10 @@
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
-import 'service_locator.config.dart';
+import 'package:shopping_app/core/di/service_locator.config.dart';
 
 final serviceLocator = GetIt.instance;
 
-@InjectableInit()
-void configureDependencies() => serviceLocator.init();
+@InjectableInit(initializerName: 'init', preferRelativeImports: true)
+void configureDependencies() {
+  serviceLocator.init();
+}
