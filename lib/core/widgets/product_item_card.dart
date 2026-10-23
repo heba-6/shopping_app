@@ -11,12 +11,19 @@ class ProductItemCard extends StatelessWidget {
     this.favoriteOnTap,
     this.addToCartOnTap,
     this.isInCart = false,
+    this.isFavourite = false,
+    this.isFavouriteLoading = false,
   });
+
   final ProductsEntity product;
   final void Function()? onTap;
   final void Function()? addToCartOnTap;
   final void Function()? favoriteOnTap;
   final bool isInCart;
+
+  // Favourite state
+  final bool isFavourite;
+  final bool isFavouriteLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +43,7 @@ class ProductItemCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(18),
                       topRight: Radius.circular(18),
                     ),
@@ -47,12 +54,13 @@ class ProductItemCard extends StatelessWidget {
                         imageUrl: product.image.isNotEmpty
                             ? product.image.first
                             : '',
-                        placeholder: (context, url) =>
-                            CircularProgressIndicator(
-                              color: AppColors.primaryOrange,
-                              padding: EdgeInsets.all(60),
-                            ),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
+                        placeholder: (context, url) => Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.primaryOrange,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.image_not_supported_outlined),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -63,15 +71,29 @@ class ProductItemCard extends StatelessWidget {
                   right: 4,
                   top: 4,
                   child: IconButton(
-                    onPressed: favoriteOnTap,
-                    icon: Icon(Icons.favorite_border_rounded),
+                    tooltip: isFavourite
+                        ? 'Remove from favourites'
+                        : 'Add to favourites',
+                    onPressed: isFavouriteLoading ? null : favoriteOnTap,
+                    icon: isFavouriteLoading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Icon(
+                            isFavourite
+                                ? Icons.favorite_rounded
+                                : Icons.favorite_border_rounded,
+                            color: isFavourite ? AppColors.red : Colors.grey,
+                          ),
                   ),
                 ),
               ],
             ),
 
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -84,22 +106,25 @@ class ProductItemCard extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
 
                   Text(
-                    "EGP ${product.price}",
-                    maxLines: 2,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    'EGP ${product.price.toStringAsFixed(2)}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
 
                   Card(
                     color: Colors.grey.shade300,
                     child: Padding(
-                      padding: EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(4),
                       child: Text(
-                        softWrap: true,
+                        'Disc: ${product.discount}%',
                         maxLines: 2,
-                        "Disc:${product.discount}%",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: AppColors.red,
@@ -112,19 +137,20 @@ class ProductItemCard extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.star, color: AppColors.orangeLight, size: 16),
-                      SizedBox(width: 2),
+                      const SizedBox(width: 2),
                       Text(
-                        "${product.rating}",
+                        '${product.rating}',
                         style: Theme.of(context).textTheme.labelMedium
                             ?.copyWith(fontWeight: FontWeight.bold),
                       ),
 
-                      Spacer(),
+                      const Spacer(),
+
                       InkWell(
                         onTap: addToCartOnTap,
                         borderRadius: BorderRadius.circular(20),
                         child: Padding(
-                          padding: EdgeInsets.all(4),
+                          padding: const EdgeInsets.all(4),
                           child: Icon(
                             isInCart
                                 ? Icons.shopping_cart
