@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:http/http.dart' as http;
+import 'package:injectable/injectable.dart';
 import 'package:shopping_app/core/constants/api_constant.dart';
 import 'package:shopping_app/core/networking/result_api.dart';
 import 'package:shopping_app/features/auth/data/model/login_response_dto.dart';
-
+@lazySingleton
 class AuthApi {
   Future<ResultApi<LoginResponseDto>> login(
     String email,

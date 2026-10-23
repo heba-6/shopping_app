@@ -9,6 +9,7 @@ import 'package:shopping_app/features/auth/domain/repo/auth_data_source_interfac
 @Injectable(as: AuthDataSourceInterface)
 class AuthDataSourceImp implements AuthDataSourceInterface {
   final AuthApi _api;
+
   AuthDataSourceImp(this._api);
 
   @override
@@ -17,6 +18,7 @@ class AuthDataSourceImp implements AuthDataSourceInterface {
     required String password,
   }) async {
     final result = await _api.login(email, password);
+
     switch (result) {
       case Success<LoginResponseDto>():
         return Success(result.data.toEntity());
