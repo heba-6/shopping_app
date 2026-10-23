@@ -8,7 +8,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Product = ProductsEntity(
+    final product = ProductsEntity(
       id: 1,
       title: "title",
       description: "This is a detailed description of the product.",
@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
         childAspectRatio: 163 / 288,
       ),
       itemBuilder: (context, index) => ProductItemCard(
-        product: Product,
+        product: product,
         onTap: () {},
         favoriteOnTap: () {},
         addToCartOnTap: () {},
