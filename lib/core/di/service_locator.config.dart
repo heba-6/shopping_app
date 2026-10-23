@@ -15,10 +15,17 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../../features/auth/data/api/auth_api.dart' as _i302;
+import '../../features/auth/data/api/register_api.dart' as _i403;
+import '../../features/auth/data/repo/data_source/auth_data_source_imp.dart'
+    as _i477;
+import '../../features/auth/data/repo/data_source/register_repo.dart' as _i395;
 import '../../features/auth/data/repo/repo/auth_repo_imp.dart' as _i909;
 import '../../features/auth/domain/repo/auth_data_source_interface.dart'
     as _i701;
 import '../../features/auth/domain/repo/auth_repo_interface.dart' as _i389;
+import '../../features/auth/presentation/view_model/register/register_cubit.dart'
+    as _i70;
 import '../../features/favourite/data/api/favourite_api.dart' as _i491;
 import '../../features/favourite/data/repo/data_source/favourite_data_source_imp.dart'
     as _i384;
@@ -90,9 +97,13 @@ extension GetItInjectableX on _i174.GetIt {
     final networkModule = _$NetworkModule();
     gh.factory<_i558.FlutterSecureStorage>(() => registerModules.storage);
     gh.lazySingleton<_i973.TokenStorage>(() => _i973.TokenStorage());
+    gh.lazySingleton<_i302.AuthApi>(() => _i302.AuthApi());
     gh.lazySingleton<_i361.Dio>(() => networkModule.dio);
     gh.lazySingleton<_i236.AppSecureStorage>(
       () => _i236.AppSecureStorage(gh<_i558.FlutterSecureStorage>()),
+    );
+    gh.lazySingleton<_i403.RegisterApi>(
+      () => _i403.RegisterApi(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i491.FavouriteApi>(
       () => _i491.FavouriteApi(gh<_i361.Dio>()),
@@ -103,11 +114,17 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i883.ProductsByCategoryApi(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i156.SearchApi>(() => _i156.SearchApi(gh<_i361.Dio>()));
+    gh.factory<_i701.AuthDataSourceInterface>(
+      () => _i477.AuthDataSourceImp(gh<_i302.AuthApi>()),
+    );
     gh.lazySingleton<_i323.AuthInterceptor>(
       () => _i323.AuthInterceptor(gh<_i973.TokenStorage>()),
     );
     gh.lazySingleton<_i273.HomeDataSourceInterface>(
       () => _i879.HomeDataSourceImpl(gh<_i168.Api>()),
+    );
+    gh.lazySingleton<_i395.RegisterRepo>(
+      () => _i395.RegisterRepo(gh<_i403.RegisterApi>()),
     );
     gh.lazySingleton<_i215.FavouriteDataSourceInterface>(
       () => _i384.FavouriteDataSourceImp(gh<_i491.FavouriteApi>()),
@@ -153,6 +170,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i843.GetAllCategoriesUseCase>(
       () => _i843.GetAllCategoriesUseCase(gh<_i1027.HomeRepoInterface>()),
+    );
+    gh.factory<_i70.RegisterCubit>(
+      () => _i70.RegisterCubit(gh<_i395.RegisterRepo>()),
     );
     gh.lazySingleton<_i65.ProductsByCategoryRepoInterface>(
       () => _i459.ProductsByCategoryRepoImpl(

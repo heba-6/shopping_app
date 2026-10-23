@@ -1,9 +1,10 @@
+import 'package:injectable/injectable.dart';
 import 'package:shopping_app/core/networking/result_api.dart';
 import 'package:shopping_app/features/auth/data/api/auth_api.dart';
 import 'package:shopping_app/features/auth/data/model/login_response_dto.dart';
 import 'package:shopping_app/features/auth/domain/entities/login_response_entity.dart';
 import 'package:shopping_app/features/auth/domain/repo/auth_data_source_interface.dart';
-
+@Injectable(as: AuthDataSourceInterface)
 class AuthDataSourceImp implements AuthDataSourceInterface {
   final AuthApi _api;
   AuthDataSourceImp(this._api);
