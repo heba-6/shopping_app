@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shopping_app/core/constants/app_assets/app_asset_image.dart';
 
 import 'package:shopping_app/core/model/item/product_item_entity.dart';
+import 'package:shopping_app/core/widgets/product_item_card.dart';
 import 'package:shopping_app/core/widgets/shared_item_widget.dart';
 import 'package:shopping_app/features/home/domain/entities/category_entity.dart';
 import 'package:shopping_app/features/home/presentation/view_model/home_cubit.dart';
@@ -260,6 +262,33 @@ class CategoriesSkeleton extends StatelessWidget {
         favoriteOnTap: () {},
         addToCartOnTap: () {},
       ),
+    );
+  }
+}
+
+class ProductsSkeleton extends StatelessWidget {
+  const ProductsSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: 6,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 18,
+        childAspectRatio: 163 / 288,
+      ),
+      itemBuilder: (context, index) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.grey.shade200,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Center(child: CircularProgressIndicator()),
+        );
+      },
     );
   }
 }
