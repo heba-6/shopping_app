@@ -7,8 +7,6 @@ import 'package:shopping_app/core/utils/validators.dart';
 import 'package:shopping_app/core/widgets/custom_button.dart';
 import 'package:shopping_app/core/widgets/custom_text_field.dart';
 import 'package:shopping_app/features/auth/data/model/register_request_model.dart';
-import 'package:shopping_app/features/auth/presentation/view/screens/login_screen.dart';
-import 'package:shopping_app/features/auth/presentation/view_model/login/login_cubit.dart';
 import 'package:shopping_app/features/auth/presentation/view_model/register/register_cubit.dart';
 import 'package:shopping_app/features/auth/presentation/view_model/register/register_state.dart';
 
