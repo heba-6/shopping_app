@@ -57,6 +57,12 @@ abstract class ThemeManager {
         fontWeight: .w600,
       ),
 
+      titleLarge: TextStyle(
+        fontSize: 36,
+        fontWeight: FontWeight.bold,
+        color: AppColors.black,
+      ),
+
       bodyLarge: TextStyle(
         color: AppColors.black,
         fontSize: 22,

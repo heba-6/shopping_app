@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:shopping_app/core/di/service_locator.dart';
 import 'package:shopping_app/core/route/app_route.dart';
 import 'package:shopping_app/core/theme/app_colors.dart';
@@ -12,6 +13,7 @@ import 'package:shopping_app/features/auth/presentation/view_model/register/regi
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
+
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
@@ -23,6 +25,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmController = TextEditingController();
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -35,6 +38,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _submit(BuildContext context) {
     if (!_formKey.currentState!.validate()) return;
+
     context.read<RegisterCubit>().register(
       RegisterRequestModel(
         name: _nameController.text.trim(),
@@ -49,7 +53,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocProvider(
+
+    return BlocProvider<RegisterCubit>(
       create: (_) => serviceLocator<RegisterCubit>(),
       child: BlocConsumer<RegisterCubit, RegisterState>(
         listener: (context, state) {
@@ -75,10 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           final isLoading = state is RegisterLoading;
 
           return Scaffold(
-            appBar: AppBar(
-              title: const Text('Sign up', style: TextStyle(fontWeight: .bold)),
-              centerTitle: true,
-            ),
+            appBar: AppBar(title: const Text('Sign up'), centerTitle: true),
             body: SafeArea(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
@@ -134,14 +136,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         hintText: '••••••••',
                         isPassword: true,
                         action: TextInputAction.done,
-                        validator: (v) => Validators.confirmPassword(
-                          v,
+                        validator: (value) => Validators.confirmPassword(
+                          value,
                           _passwordController.text,
                         ),
                       ),
                       const SizedBox(height: 24),
                       isLoading
-                          ? const Center(child: CircularProgressIndicator())
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.primaryOrange,
+                              ),
+                            )
                           : CustomButon(
                               title: 'Sign up',
                               textColor: AppColors.white,

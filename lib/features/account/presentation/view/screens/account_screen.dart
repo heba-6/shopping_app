@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shopping_app/core/theme/app_colors.dart';
 import 'package:shopping_app/features/account/presentation/view_model/account_cubit.dart';
 import 'package:shopping_app/features/account/presentation/view_model/account_state.dart';
 
@@ -94,16 +95,9 @@ class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFECECEC),
+      backgroundColor: AppColors.lightGreyDark,
       appBar: AppBar(
-        title: const Text(
-          'Account',
-          style: TextStyle(
-            color: Colors.black87,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        title: const Text('Account'),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: false,
@@ -167,13 +161,13 @@ class _AccountScreenState extends State<AccountScreen> {
                       children: [
                         CircleAvatar(
                           radius: 65,
-                          backgroundColor: Colors.grey.shade300,
+                          backgroundColor: AppColors.lightGrey,
                           backgroundImage: imageProvider,
                           child: imageProvider == null
                               ? const Icon(
                                   Icons.person_outline,
                                   size: 60,
-                                  color: Colors.grey,
+                                  color: AppColors.greyDark,
                                 )
                               : null,
                         ),
@@ -181,11 +175,13 @@ class _AccountScreenState extends State<AccountScreen> {
                           onTap: _showImageOptions,
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: AppColors.white,
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.15),
+                                  color: AppColors.black.withValues(
+                                    alpha: 0.15,
+                                  ),
                                   blurRadius: 6,
                                   offset: const Offset(0, 2),
                                 ),
@@ -195,25 +191,29 @@ class _AccountScreenState extends State<AccountScreen> {
                             child: const Icon(
                               Icons.camera_alt_outlined,
                               size: 22,
-                              color: Colors.black87,
+                              color: AppColors.black,
                             ),
                           ),
                         ),
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 35),
                   _label('Name'),
                   const SizedBox(height: 8),
                   _field(_nameController),
+
                   const SizedBox(height: 20),
                   _label('Phone'),
                   const SizedBox(height: 8),
                   _field(_phoneController, type: TextInputType.phone),
+
                   const SizedBox(height: 20),
                   _label('Address'),
                   const SizedBox(height: 8),
                   _field(_addressController),
+
                   const SizedBox(height: 120),
                   SizedBox(
                     width: double.infinity,
@@ -221,8 +221,9 @@ class _AccountScreenState extends State<AccountScreen> {
                     child: ElevatedButton(
                       onPressed: state.isUpdating ? null : _submit,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1E1E1E),
-                        foregroundColor: Colors.white,
+                        backgroundColor: AppColors.darkGrey,
+                        foregroundColor: AppColors.white,
+                        disabledBackgroundColor: AppColors.grey,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -234,7 +235,7 @@ class _AccountScreenState extends State<AccountScreen> {
                               height: 22,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: Colors.white,
+                                color: AppColors.white,
                               ),
                             )
                           : const Text(
@@ -255,11 +256,7 @@ class _AccountScreenState extends State<AccountScreen> {
   Widget _label(String text) {
     return Text(
       text,
-      style: const TextStyle(
-        fontSize: 16,
-        color: Colors.black87,
-        fontWeight: FontWeight.w500,
-      ),
+      style: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 16),
     );
   }
 
@@ -267,19 +264,8 @@ class _AccountScreenState extends State<AccountScreen> {
     return TextField(
       controller: controller,
       keyboardType: type,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.black54),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.black87, width: 1.5),
-        ),
+      decoration: const InputDecoration(
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
     );
   }

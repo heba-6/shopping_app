@@ -6,6 +6,7 @@ import 'package:shopping_app/features/favourite/domain/use_case/add_to_favourite
 import 'package:shopping_app/features/favourite/domain/use_case/get_favourites_use_case.dart';
 import 'package:shopping_app/features/favourite/domain/use_case/remove_favourite_use_case.dart';
 import 'package:shopping_app/features/favourite/presentation/view_model/favourite_state.dart';
+import 'package:shopping_app/features/products_by_category/domain/entities/product_by_category_entity.dart';
 
 @lazySingleton
 class FavouriteCubit extends Cubit<FavouriteState> {
@@ -125,5 +126,21 @@ class FavouriteCubit extends Cubit<FavouriteState> {
     }
 
     return toggleFavourite(product.first);
+  }
+
+  Future<ResultApi<void>> toggleCategoryFavourite(
+    ProductByCategoryEntity product,
+  ) {
+    final favouriteProduct = ProductsEntity(
+      id: product.id,
+      title: product.title,
+      description: product.description,
+      price: product.price,
+      discount: product.discountPercentage,
+      rating: product.rating,
+      image: product.images,
+    );
+
+    return toggleFavourite(favouriteProduct);
   }
 }

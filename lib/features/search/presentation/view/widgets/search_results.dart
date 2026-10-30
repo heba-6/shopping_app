@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shopping_app/core/helper/cart_helper.dart';
+import 'package:shopping_app/core/helper/favourite_helper.dart';
 import 'package:shopping_app/core/model/item/product_item_entity.dart';
 import 'package:shopping_app/core/widgets/product_item_card.dart';
 import '../../../domain/entities/search_product_entity.dart';
@@ -38,10 +40,10 @@ class SearchResults extends StatelessWidget {
             // Add product details navigation here if needed.
           },
           favoriteOnTap: () {
-            // Connect favorite functionality here if needed.
+            FavouriteHelper.toggleFavourite(context, product);
           },
           addToCartOnTap: () {
-            // Connect add-to-cart functionality here if needed.
+            CartHelper.addToCart(context, product.id);
           },
         );
       },

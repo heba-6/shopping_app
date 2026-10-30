@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shopping_app/core/di/service_locator.dart';
+import 'package:shopping_app/core/theme/app_colors.dart';
 import 'package:shopping_app/core/model/item/product_item_entity.dart';
 import 'package:shopping_app/features/favourite/presentation/view_model/favourite_cubit.dart';
 import 'package:shopping_app/features/favourite/presentation/view_model/favourite_state.dart';
@@ -12,10 +12,7 @@ class FavouriteScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: serviceLocator<FavouriteCubit>()..getFavourites(),
-      child: const _FavouriteView(),
-    );
+    return const _FavouriteView();
   }
 }
 
@@ -34,13 +31,16 @@ class _FavouriteView extends StatelessWidget {
               SnackBar(
                 content: Text(state.errorMessage!),
                 behavior: SnackBarBehavior.floating,
+                backgroundColor: AppColors.red,
               ),
             );
           }
         },
         builder: (context, state) {
           if (state.status == FavouriteStatus.loading && state.items.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.primaryOrange),
+            );
           }
 
           if (state.status == FavouriteStatus.failure && state.items.isEmpty) {
@@ -57,6 +57,7 @@ class _FavouriteView extends StatelessWidget {
           }
 
           return RefreshIndicator(
+            color: AppColors.primaryOrange,
             onRefresh: () => context.read<FavouriteCubit>().getFavourites(),
             child: GridView.builder(
               padding: const EdgeInsets.all(16),
@@ -114,26 +115,28 @@ class _EmptyFavouriteView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
-            'assets/icons/favorite.svg',
-            width: 200,
-            height: 200,
+            'assets/images/favorite.png',
+            width: 250,
+            height: 250,
             fit: BoxFit.contain,
           ),
           const SizedBox(height: 16),
           Text(
             'There are no products in your',
-            style: Theme.of(context).textTheme.bodyLarge,
+            style: theme.textTheme.bodyLarge,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
-            'favourite list ',
-            style: Theme.of(context).textTheme.bodyLarge,
+            'favourite list',
+            style: theme.textTheme.bodyLarge,
             textAlign: TextAlign.center,
           ),
         ],
@@ -150,15 +153,21 @@ class _ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline, size: 56, color: Colors.red),
+            const Icon(Icons.error_outline, size: 56, color: AppColors.red),
             const SizedBox(height: 12),
-            Text(message, textAlign: TextAlign.center),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium,
+            ),
             const SizedBox(height: 16),
             ElevatedButton(onPressed: onRetry, child: const Text('Try Again')),
           ],

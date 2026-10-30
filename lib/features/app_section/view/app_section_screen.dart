@@ -5,6 +5,8 @@ import 'package:shopping_app/core/di/service_locator.dart';
 import 'package:shopping_app/features/account/presentation/view_model/account_cubit.dart';
 import 'package:shopping_app/features/app_section/view_model/app_section_cubit.dart';
 import 'package:shopping_app/features/app_section/view_model/app_section_state.dart';
+import 'package:shopping_app/features/cart/presentation/view_model/cart_cubit.dart';
+import 'package:shopping_app/features/favourite/presentation/view_model/favourite_cubit.dart';
 import 'package:shopping_app/features/home/presentation/view/screens/home_screen.dart';
 import 'package:shopping_app/features/home/presentation/view_model/home_cubit.dart';
 import 'package:shopping_app/features/cart/presentation/view/screens/cart_screen.dart';
@@ -17,14 +19,28 @@ class AppSectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Widget> screens = [
-      BlocProvider<HomeCubit>(
-        create: (_) => serviceLocator<HomeCubit>()..loadHome(),
+      MultiBlocProvider(
+        providers: [
+          BlocProvider<HomeCubit>(
+            create: (_) => serviceLocator<HomeCubit>()..loadHome(),
+          ),
+          BlocProvider<CartCubit>(create: (_) => serviceLocator<CartCubit>()),
+          BlocProvider<FavouriteCubit>(
+            create: (_) => serviceLocator<FavouriteCubit>(),
+          ),
+        ],
         child: const HomeScreen(),
       ),
-      const CartScreen(),
-      const FavouriteScreen(),
-      BlocProvider(
-        create: (context) => serviceLocator<AccountCubit>(),
+      BlocProvider<CartCubit>(
+        create: (_) => serviceLocator<CartCubit>()..getCart(),
+        child: const CartScreen(),
+      ),
+      BlocProvider<FavouriteCubit>(
+        create: (_) => serviceLocator<FavouriteCubit>()..getFavourites(),
+        child: const FavouriteScreen(),
+      ),
+      BlocProvider<AccountCubit>(
+        create: (_) => serviceLocator<AccountCubit>(),
         child: AccountScreen(),
       ),
     ];
