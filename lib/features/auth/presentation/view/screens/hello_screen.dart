@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'package:shopping_app/core/helper/app_secure_storage.dart';
 import 'package:shopping_app/core/theme/app_colors.dart';
 import 'package:shopping_app/features/auth/data/api/auth_api.dart';
@@ -16,27 +17,20 @@ class HelloScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titleStyle = Theme.of(
-      context,
-    ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold);
+    final theme = Theme.of(context);
+
+    final titleStyle = theme.textTheme.titleMedium?.copyWith(fontWeight: .bold);
 
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             children: [
               const Spacer(flex: 2),
               Image.asset('assets/images/rafiki.png', height: 240),
               const SizedBox(height: 32),
-              const Text(
-                'Hello!',
-                style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.black,
-                ),
-              ),
+              Text('Hello!', style: theme.textTheme.titleLarge),
               const Spacer(flex: 3),
               _buildButton(
                 text: 'Sign up',
@@ -60,20 +54,19 @@ class HelloScreen extends StatelessWidget {
                 borderColor: AppColors.orangeLight,
                 style: titleStyle,
                 onTap: () {
+                  final secureStorage = AppSecureStorage(
+                    const FlutterSecureStorage(),
+                  );
+
+                  final loginUseCase = LoginUseCase(
+                    AuthRepoImp(AuthDataSourceImp(AuthApi()), secureStorage),
+                  );
+
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => BlocProvider(
-                        create: (context) => LoginCubit(
-                          LoginUseCase(
-                            AuthRepoImp(
-                              AuthDataSourceImp(AuthApi()),
-                              AppSecureStorage(FlutterSecureStorage()),
-                            ),
-                          ),
-                          AppSecureStorage(FlutterSecureStorage()),
-                        ),
-
+                      builder: (context) => BlocProvider<LoginCubit>(
+                        create: (_) => LoginCubit(loginUseCase, secureStorage),
                         child: const LoginScreen(),
                       ),
                     ),

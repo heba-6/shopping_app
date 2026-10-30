@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
@@ -25,7 +24,7 @@ class AuthInterceptor extends Interceptor {
       log('TOKEN LENGTH: ${token?.trim().length ?? 0}');
 
       if (hasToken) {
-        options.headers['Authorization'] = 'Bearer ${token!.trim()}';
+        options.headers['Authorization'] = 'Bearer ${token.trim()}';
       } else {
         options.headers.remove('Authorization');
       }
@@ -38,12 +37,7 @@ class AuthInterceptor extends Interceptor {
         stackTrace: stackTrace,
       );
 
-      handler.reject(
-        DioException(
-          requestOptions: options,
-          error: error,
-        ),
-      );
+      handler.reject(DioException(requestOptions: options, error: error));
     }
   }
 }

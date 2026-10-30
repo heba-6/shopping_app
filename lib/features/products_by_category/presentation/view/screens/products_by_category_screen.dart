@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopping_app/core/di/service_locator.dart';
+import 'package:shopping_app/core/helper/cart_helper.dart';
+import 'package:shopping_app/core/helper/favourite_helper.dart';
 import 'package:shopping_app/core/model/item/product_item_entity.dart';
+import 'package:shopping_app/core/theme/app_colors.dart';
 import 'package:shopping_app/core/widgets/shared_item_widget.dart';
 import 'package:shopping_app/features/products_by_category/presentation/view_model/products_by_category_cubit.dart';
 import 'package:shopping_app/features/products_by_category/presentation/view_model/products_by_category_state.dart';
@@ -9,11 +12,13 @@ import 'package:shopping_app/features/products_by_category/presentation/view_mod
 class ProductsByCategoryScreen extends StatefulWidget {
   final String slug;
   final String categoryName;
+
   const ProductsByCategoryScreen({
     super.key,
     required this.slug,
     required this.categoryName,
   });
+
   @override
   State<ProductsByCategoryScreen> createState() =>
       _ProductsByCategoryScreenState();
@@ -23,11 +28,14 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen>
     with AutomaticKeepAliveClientMixin {
   late final ProductsByCategoryCubit _cubit;
   late final ScrollController _scrollController;
+
   @override
   bool get wantKeepAlive => true;
+
   @override
   void initState() {
     super.initState();
+
     _cubit = serviceLocator<ProductsByCategoryCubit>();
     _scrollController = ScrollController();
 
@@ -38,6 +46,7 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen>
 
   void _onScroll() {
     if (!_scrollController.hasClients) return;
+
     if (_scrollController.position.extentAfter < 300) {
       _cubit.loadMoreProducts();
     }
@@ -54,6 +63,9 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    final theme = Theme.of(context);
+
     return BlocProvider.value(
       value: _cubit,
       child: Scaffold(
@@ -62,7 +74,11 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen>
           builder: (context, state) {
             if (state is ProductsByCategoryInitial ||
                 state is ProductsByCategoryLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.primaryOrange,
+                ),
+              );
             }
 
             if (state is ProductsByCategoryError) {
@@ -70,7 +86,11 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(state.message),
+                    Text(
+                      state.message,
+                      style: theme.textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
                     const SizedBox(height: 12),
                     ElevatedButton(
                       onPressed: () {
@@ -87,8 +107,11 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen>
 
             if (state is ProductsByCategorySuccess) {
               if (state.products.isEmpty) {
-                return const Center(
-                  child: Text('No products found in this category'),
+                return Center(
+                  child: Text(
+                    'No products found in this category',
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 );
               }
 
@@ -122,7 +145,11 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen>
                       );
                     }
 
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primaryOrange,
+                      ),
+                    );
                   }
 
                   final product = state.products[index];
@@ -140,8 +167,12 @@ class _ProductsByCategoryScreenState extends State<ProductsByCategoryScreen>
                   return SharedItemWidget(
                     product: sharedProduct,
                     onTap: () {},
-                    favoriteOnTap: () {},
-                    addToCartOnTap: () {},
+                    favoriteOnTap: () {
+                      FavouriteHelper.toggleCategoryFavourite(context, product);
+                    },
+                    addToCartOnTap: () {
+                      CartHelper.addToCart(context, product.id);
+                    },
                   );
                 },
               );

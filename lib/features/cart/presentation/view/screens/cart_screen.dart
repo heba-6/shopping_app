@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shopping_app/core/di/service_locator.dart';
+
+import 'package:shopping_app/core/networking/result_api.dart';
+import 'package:shopping_app/core/theme/app_colors.dart';
+import 'package:shopping_app/features/app_section/view_model/app_section_cubit.dart';
 import 'package:shopping_app/features/cart/presentation/view/widgets/cart_item_widget.dart';
 import 'package:shopping_app/features/cart/presentation/view_model/cart_cubit.dart';
 import 'package:shopping_app/features/cart/presentation/view_model/cart_state.dart';
-import 'package:shopping_app/core/networking/result_api.dart';
-import 'package:shopping_app/features/home/presentation/view/screens/home_screen.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => serviceLocator<CartCubit>()..getCart(),
-      child: const _CartView(),
-    );
+    return const _CartView();
   }
 }
 
@@ -24,6 +22,8 @@ class _CartView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(title: const Text('My Cart'), centerTitle: true),
       body: BlocConsumer<CartCubit, CartState>(
@@ -36,13 +36,15 @@ class _CartView extends StatelessWidget {
             ..showSnackBar(
               SnackBar(
                 content: Text(state.errorMessage!),
-                backgroundColor: Colors.red,
+                backgroundColor: AppColors.red,
               ),
             );
         },
         builder: (context, state) {
           if (state.status == CartStatus.loading && state.items.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.primaryOrange),
+            );
           }
 
           if (state.status == CartStatus.failure && state.items.isEmpty) {
@@ -55,12 +57,13 @@ class _CartView extends StatelessWidget {
                     const Icon(
                       Icons.error_outline,
                       size: 55,
-                      color: Colors.red,
+                      color: AppColors.red,
                     ),
                     const SizedBox(height: 12),
                     Text(
                       state.errorMessage ?? 'Something went wrong',
                       textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyMedium,
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
@@ -87,20 +90,16 @@ class _CartView extends StatelessWidget {
                     fit: BoxFit.contain,
                   ),
                   const SizedBox(height: 16),
-                  const Text(
+                  Text(
                     'Your cart is empty',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: theme.textTheme.titleLarge?.copyWith(fontSize: 20),
                   ),
-
                   const SizedBox(height: 16),
-                  OutlinedButton(
-                    onPressed: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HomeScreen(),
-                      ),
-                    ),
-                    child: const Text('Continue Shopping'),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<AppSectionCubit>().changeTab(0);
+                    },
+                    child: const Text('Go to Home'),
                   ),
                 ],
               ),
@@ -111,6 +110,7 @@ class _CartView extends StatelessWidget {
             children: [
               Expanded(
                 child: RefreshIndicator(
+                  color: AppColors.primaryOrange,
                   onRefresh: () {
                     return context.read<CartCubit>().getCart();
                   },
@@ -144,7 +144,7 @@ class _CartView extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('Product removed from cart'),
-                                backgroundColor: Colors.green,
+                                backgroundColor: AppColors.green,
                               ),
                             );
                           }
@@ -174,13 +174,15 @@ class _CartSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: theme.colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
+            color: AppColors.black.withValues(alpha: 0.08),
             blurRadius: 10,
             offset: const Offset(0, -3),
           ),
@@ -191,11 +193,16 @@ class _CartSummary extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _summaryRow('Items', '$totalQuantity'),
+            _summaryRow(context, 'Items', '$totalQuantity'),
             const SizedBox(height: 8),
-            _summaryRow('Subtotal', '\$${subtotal.toStringAsFixed(2)}'),
+            _summaryRow(
+              context,
+              'Subtotal',
+              '\$${subtotal.toStringAsFixed(2)}',
+            ),
             const Divider(height: 24),
             _summaryRow(
+              context,
               'Total',
               '\$${subtotal.toStringAsFixed(2)}',
               isTotal: true,
@@ -212,9 +219,9 @@ class _CartSummary extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text(
+                child: Text(
                   'Checkout',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: theme.textTheme.titleMedium?.copyWith(fontSize: 16),
                 ),
               ),
             ),
@@ -224,25 +231,27 @@ class _CartSummary extends StatelessWidget {
     );
   }
 
-  Widget _summaryRow(String label, String value, {bool isTotal = false}) {
+  Widget _summaryRow(
+    BuildContext context,
+    String label,
+    String value, {
+    bool isTotal = false,
+  }) {
+    final theme = Theme.of(context);
+
+    final labelStyle = isTotal
+        ? theme.textTheme.titleMedium?.copyWith(color: AppColors.deepOrange)
+        : theme.textTheme.labelMedium;
+
+    final valueStyle = isTotal
+        ? theme.textTheme.titleMedium?.copyWith(color: AppColors.deepOrange)
+        : theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.bold);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: isTotal ? 18 : 14,
-            fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: isTotal ? 18 : 14,
-            fontWeight: FontWeight.bold,
-            color: isTotal ? Colors.deepOrange : null,
-          ),
-        ),
+        Text(label, style: labelStyle),
+        Text(value, style: valueStyle),
       ],
     );
   }

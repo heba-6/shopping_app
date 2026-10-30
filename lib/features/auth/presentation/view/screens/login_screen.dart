@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:shopping_app/core/route/app_route.dart';
 import 'package:shopping_app/core/theme/app_colors.dart';
 import 'package:shopping_app/core/utils/app_dialog.dart';
@@ -19,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   late TextTheme theme;
   late TextEditingController email;
   late TextEditingController password;
+
   @override
   void initState() {
     super.initState();
@@ -55,7 +57,10 @@ class _LoginScreenState extends State<LoginScreen> {
         if (state is LoginError) {
           Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error), backgroundColor: Colors.red),
+            SnackBar(
+              content: Text(state.error),
+              backgroundColor: AppColors.red,
+            ),
           );
         }
       },
@@ -66,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: .start,
             children: [
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               Text("Email", style: theme.bodyMedium),
               CustomTextFormField(
                 controller: email,
@@ -75,6 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (text == null || text.isEmpty) {
                     return 'Please enter your email';
                   }
+
                   final bool isValidEmail = RegExp(
                     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
                   ).hasMatch(text);
@@ -82,11 +88,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (!isValidEmail) {
                     return 'Please enter a valid email address';
                   }
+
                   return null;
                 },
                 keyboardType: TextInputType.emailAddress,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text("Password", style: theme.bodyMedium),
               CustomTextFormField(
                 controller: password,
@@ -94,13 +101,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (text == null || text.isEmpty) {
                     return 'Please enter your password';
                   }
+
                   return null;
                 },
                 keyboardType: TextInputType.text,
                 hintText: "Enter your password",
                 isPassword: true,
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               CustomButon(
                 title: "Login",
                 onTap: () async {
@@ -113,7 +121,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-
         floatingActionButtonLocation: .centerFloat,
         floatingActionButton: GestureDetector(
           onTap: () {
@@ -127,11 +134,11 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 TextSpan(
                   text: "Don't have an account? ",
-                  style: TextStyle(color: AppColors.black),
+                  style: theme.labelMedium,
                 ),
                 TextSpan(
-                  text: "Sign Up",
-                  style: TextStyle(fontWeight: .bold, color: AppColors.black),
+                  text: 'Sign Up',
+                  style: theme.labelMedium?.copyWith(fontWeight: .bold),
                 ),
               ],
             ),

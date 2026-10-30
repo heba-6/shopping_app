@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopping_app/core/constants/app_assets/app_asset_image.dart';
-
+import 'package:shopping_app/core/helper/cart_helper.dart';
+import 'package:shopping_app/core/helper/favourite_helper.dart';
 import 'package:shopping_app/core/model/item/product_item_entity.dart';
+import 'package:shopping_app/core/theme/app_colors.dart';
 import 'package:shopping_app/core/widgets/product_item_card.dart';
 import 'package:shopping_app/core/widgets/shared_item_widget.dart';
 import 'package:shopping_app/features/home/domain/entities/category_entity.dart';
@@ -59,13 +61,14 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     super.build(context);
 
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(toolbarHeight: 0, elevation: 0),
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
@@ -82,11 +85,7 @@ class _HomeScreenState extends State<HomeScreen>
                   },
                   decoration: InputDecoration(
                     hintText: 'Search for products...',
-                    hintStyle: const TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    prefixIcon: const Icon(Icons.search),
                     contentPadding: const EdgeInsets.symmetric(vertical: 14),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -113,6 +112,7 @@ class _HomeScreenState extends State<HomeScreen>
                   child: Text(
                     'Failed to load categories: '
                     '${state.categoriesError}',
+                    style: theme.textTheme.bodyMedium,
                   ),
                 )
               else
@@ -148,13 +148,19 @@ class _HomeScreenState extends State<HomeScreen>
                         'Failed to load products: '
                         '${state.productError}',
                         textAlign: TextAlign.center,
+                        style: theme.textTheme.bodyMedium,
                       ),
                     ),
                   ),
                 )
               else if (state.products.isEmpty)
-                const Expanded(
-                  child: Center(child: Text('No products available')),
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'No products available',
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                  ),
                 )
               else
                 Expanded(
@@ -173,7 +179,11 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                     itemBuilder: (context, index) {
                       if (index >= state.products.length) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.primaryOrange,
+                          ),
+                        );
                       }
 
                       final apiProduct = state.products[index];
@@ -191,8 +201,12 @@ class _HomeScreenState extends State<HomeScreen>
                       return SharedItemWidget(
                         product: product,
                         onTap: () {},
-                        favoriteOnTap: () {},
-                        addToCartOnTap: () {},
+                        favoriteOnTap: () {
+                          FavouriteHelper.toggleFavourite(context, product);
+                        },
+                        addToCartOnTap: () {
+                          CartHelper.addToCart(context, product.id);
+                        },
                       );
                     },
                   ),
@@ -209,8 +223,8 @@ class _HomeScreenState extends State<HomeScreen>
                       Expanded(
                         child: Text(
                           'Could not load more products.',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.error,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.error,
                           ),
                         ),
                       ),
@@ -238,7 +252,7 @@ class CategoriesSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Product = ProductsEntity(
+    final product = ProductsEntity(
       id: 1,
       title: "title",
       description: "This is a detailed description of the product.",
@@ -247,6 +261,7 @@ class CategoriesSkeleton extends StatelessWidget {
       rating: 4.7,
       image: [AssetsImages.onboarding_1],
     );
+
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: 6,
@@ -257,7 +272,7 @@ class CategoriesSkeleton extends StatelessWidget {
         childAspectRatio: 163 / 288,
       ),
       itemBuilder: (context, index) => ProductItemCard(
-        product: Product,
+        product: product,
         onTap: () {},
         favoriteOnTap: () {},
         addToCartOnTap: () {},
@@ -283,10 +298,12 @@ class ProductsSkeleton extends StatelessWidget {
       itemBuilder: (context, index) {
         return Container(
           decoration: BoxDecoration(
-            color: Colors.grey.shade200,
+            color: AppColors.backGroundGrey,
             borderRadius: BorderRadius.circular(12),
           ),
-          child: const Center(child: CircularProgressIndicator()),
+          child: const Center(
+            child: CircularProgressIndicator(color: AppColors.primaryOrange),
+          ),
         );
       },
     );
