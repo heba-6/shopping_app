@@ -38,8 +38,9 @@ class AccountState {
           ? null
           : selectedImage ?? this.selectedImage,
       errorMessage: clearError ? null : errorMessage ?? this.errorMessage,
-      successMessage:
-          clearSuccess ? null : successMessage ?? this.successMessage,
+      successMessage: clearSuccess
+          ? null
+          : successMessage ?? this.successMessage,
     );
   }
 }

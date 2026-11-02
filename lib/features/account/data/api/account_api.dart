@@ -23,12 +23,7 @@ class AccountApi {
   }) async {
     final response = await _dio.post(
       '/portfoilo/editUserData',
-      data: {
-        'name': name,
-        'phone': phone,
-        'address': address,
-        'image': image,
-      },
+      data: {'name': name, 'phone': phone, 'address': address, 'image': image},
     );
 
     return Map<String, dynamic>.from(response.data as Map);
@@ -39,10 +34,7 @@ class AccountApi {
       'file': await MultipartFile.fromFile(imageFile.path),
     });
 
-    final response = await _dio.post(
-      '/portfoilo/addImage',
-      data: formData,
-    );
+    final response = await _dio.post('/portfoilo/addImage', data: formData);
 
     return Map<String, dynamic>.from(response.data as Map);
   }
