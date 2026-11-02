@@ -67,8 +67,6 @@ class _CategoryBannerSliderState extends State<CategoryBannerSlider> {
       _currentIndex = index % widget.categories.length;
     });
 
-    // Restart the timer after every page change,
-    // whether the change was automatic or manual.
     _startAutoPlay();
   }
 
@@ -95,8 +93,6 @@ class _CategoryBannerSliderState extends State<CategoryBannerSlider> {
       return List.generate(count, (index) => index);
     }
 
-    // Keep the active dot near the center.
-    // The indicator window moves circularly with the slider.
     final startIndex = _currentIndex - 2;
 
     return List.generate(5, (index) => (startIndex + index + count) % count);
@@ -172,6 +168,7 @@ class _CategoryBannerSliderState extends State<CategoryBannerSlider> {
             Image.network(
               _getBannerImage(category),
               fit: BoxFit.cover,
+              width: double.infinity,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
                   color: Colors.grey.shade300,
@@ -185,7 +182,6 @@ class _CategoryBannerSliderState extends State<CategoryBannerSlider> {
               },
             ),
 
-            // Dark gradient to make the text readable.
             const DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -214,6 +210,20 @@ class _CategoryBannerSliderState extends State<CategoryBannerSlider> {
                       color: Colors.white,
                       fontSize: 23,
                       fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  const SizedBox(height: 6),
+
+                  Text(
+                    CategoryBannerImages.hints[category.slug] ??
+                        'Discover something you will love.',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
 

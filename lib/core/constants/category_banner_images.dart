@@ -1,6 +1,56 @@
 class CategoryBannerImages {
   CategoryBannerImages._();
 
+  static const Map<String, String> hints = {
+    'beauty': 'Discover your beauty essentials.',
+
+    'fragrances': 'Find a scent that defines you.',
+
+    'furniture': 'Make your space feel like home.',
+
+    'groceries': 'Fresh picks for your everyday needs.',
+
+    'home-decoration': 'Add a beautiful touch to your home.',
+
+    'kitchen-accessories': 'Make every meal more enjoyable.',
+
+    'laptops': 'Power up your productivity.',
+
+    'mens-shirts': 'Upgrade your everyday style.',
+
+    'mens-shoes': 'Step out with confidence.',
+
+    'mens-watches': 'Time to elevate your look.',
+
+    'mobile-accessories': 'Accessories that keep you connected.',
+
+    'motorcycle': 'Explore the thrill of the ride.',
+
+    'skin-care': 'Give your skin the care it deserves.',
+
+    'smartphones': 'Stay connected to what matters.',
+
+    'sports-accessories': 'Gear up and reach your goals.',
+
+    'sunglasses': 'See the world in style.',
+
+    'tablets': 'Entertainment and productivity on the go.',
+
+    'tops': 'Find your next favorite look.',
+
+    'vehicle': 'Discover your next dream ride.',
+
+    'womens-bags': 'Carry your style everywhere.',
+
+    'womens-dresses': 'Dress beautifully for every moment.',
+
+    'womens-jewellery': 'Add a little sparkle to your day.',
+
+    'womens-shoes': 'Every step deserves a stylish touch.',
+
+    'womens-watches': 'A timeless touch of elegance.',
+  };
+
   static const Map<String, String> images = {
     'beauty': 'https://www.glowmediaeg.com/images/beauty.jpg',
 
