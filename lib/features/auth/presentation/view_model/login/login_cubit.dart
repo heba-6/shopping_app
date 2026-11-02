@@ -1,4 +1,3 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter/material.dart';
@@ -27,10 +26,7 @@ class LoginCubit extends Cubit<LoginState> {
   Future<void> _login(String email, String password) async {
     emit(LoginLoading());
 
-    final result = await _loginUseCase.invoke(
-      email: email,
-      password: password,
-    );
+    final result = await _loginUseCase.invoke(email: email, password: password);
 
     switch (result) {
       case Success<LoginResponseEntity>():

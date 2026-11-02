@@ -36,7 +36,7 @@ class CartItemWidget extends StatelessWidget {
                     : Image.network(
                         item.image,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) {
+                        errorBuilder: (_, _, _) {
                           return const Icon(
                             Icons.broken_image_outlined,
                             size: 35,

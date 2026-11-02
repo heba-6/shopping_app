@@ -16,20 +16,12 @@ class CartRepoImp implements CartRepoInterface {
   }
 
   @override
-  Future<ResultApi<void>> addToCart({
-    required int productId,
-  }) {
-    return _dataSource.addToCart(
-      productId: productId,
-    );
+  Future<ResultApi<void>> addToCart({required int productId}) {
+    return _dataSource.addToCart(productId: productId);
   }
 
   @override
-  Future<ResultApi<void>> deleteCartItem({
-    required int productId,
-  }) {
-    return _dataSource.deleteCartItem(
-      productId: productId,
-    );
+  Future<ResultApi<void>> deleteCartItem({required int productId}) {
+    return _dataSource.deleteCartItem(productId: productId);
   }
 }

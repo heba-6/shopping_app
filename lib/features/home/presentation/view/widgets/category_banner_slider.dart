@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shopping_app/core/constants/category_banner_images.dart';
 import 'package:shopping_app/core/theme/app_colors.dart';
@@ -8,14 +9,20 @@ import 'package:shopping_app/features/products_by_category/presentation/view/scr
 
 class CategoryBannerSlider extends StatefulWidget {
   final List<CategoryEntity> categories;
+  final bool isActive;
 
-  const CategoryBannerSlider({super.key, required this.categories});
+  const CategoryBannerSlider({
+    super.key,
+    required this.categories,
+    this.isActive = true,
+  });
 
   @override
   State<CategoryBannerSlider> createState() => _CategoryBannerSliderState();
 }
 
-class _CategoryBannerSliderState extends State<CategoryBannerSlider> {
+class _CategoryBannerSliderState extends State<CategoryBannerSlider>
+    with WidgetsBindingObserver {
   late final PageController _pageController;
 
   Timer? _autoPlayTimer;
@@ -29,23 +36,52 @@ class _CategoryBannerSliderState extends State<CategoryBannerSlider> {
   void initState() {
     super.initState();
 
+    WidgetsBinding.instance.addObserver(this);
+
     final initialPage = widget.categories.isEmpty
         ? 0
         : 10000 - (10000 % widget.categories.length);
 
     _pageController = PageController(initialPage: initialPage);
 
-    if (widget.categories.length > 1) {
+    if (widget.categories.length > 1 &&
+        WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
       _startAutoPlay();
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _startAutoPlay();
+    } else {
+      _autoPlayTimer?.cancel();
+      _autoPlayTimer = null;
     }
   }
 
   void _startAutoPlay() {
     _autoPlayTimer?.cancel();
+    _autoPlayTimer = null;
 
-    if (widget.categories.length <= 1) return;
+    if (!mounted ||
+        !widget.isActive ||
+        widget.categories.length <= 1 ||
+        WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed) {
+      return;
+    }
 
-    _autoPlayTimer = Timer(_autoPlayDuration, _goToNextPage);
+    _autoPlayTimer = Timer(_autoPlayDuration, () {
+      _autoPlayTimer = null;
+
+      if (!mounted ||
+          !widget.isActive ||
+          WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed) {
+        return;
+      }
+
+      _goToNextPage();
+    });
   }
 
   void _goToNextPage() {
@@ -102,6 +138,15 @@ class _CategoryBannerSliderState extends State<CategoryBannerSlider> {
   void didUpdateWidget(covariant CategoryBannerSlider oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    if (oldWidget.isActive != widget.isActive) {
+      if (widget.isActive) {
+        _startAutoPlay();
+      } else {
+        _autoPlayTimer?.cancel();
+        _autoPlayTimer = null;
+      }
+    }
+
     if (oldWidget.categories.length != widget.categories.length) {
       _autoPlayTimer?.cancel();
 
@@ -121,6 +166,8 @@ class _CategoryBannerSliderState extends State<CategoryBannerSlider> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+
     _autoPlayTimer?.cancel();
     _pageController.dispose();
 
@@ -165,23 +212,23 @@ class _CategoryBannerSliderState extends State<CategoryBannerSlider> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Image.network(
-              _getBannerImage(category),
-              fit: BoxFit.cover,
+            CachedNetworkImage(
+              imageUrl: _getBannerImage(category),
               width: double.infinity,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: Colors.grey.shade300,
-                  alignment: Alignment.center,
-                  child: const Icon(
-                    Icons.image_not_supported_outlined,
-                    size: 40,
-                    color: Colors.grey,
-                  ),
-                );
-              },
+              height: double.infinity,
+              fit: BoxFit.cover,
+              placeholder: (context, url) =>
+                  Container(color: const Color(0xFFF5F5F5)),
+              errorWidget: (context, url, error) => Container(
+                color: const Color(0xFFF5F5F5),
+                alignment: Alignment.center,
+                child: const Icon(
+                  Icons.image_not_supported_outlined,
+                  color: Colors.grey,
+                  size: 40,
+                ),
+              ),
             ),
-
             const DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(

@@ -100,11 +100,14 @@ class HomeCubit extends Cubit<HomeState> {
       switch (result) {
         case Success<ProductResponseEntity>():
           final response = result.data;
-          final existingIds = state.products.map((p) => p.id).toSet();
 
-          final newProducts = response.list
-              .where((product) => !existingIds.contains(product.id))
-              .toList();
+          final existingIds = state.products
+              .map((product) => product.id)
+              .toSet();
+
+          final newProducts = response.list.where((product) {
+            return existingIds.add(product.id);
+          }).toList();
 
           final allProducts = [...state.products, ...newProducts];
 

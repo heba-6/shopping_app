@@ -18,7 +18,23 @@ class AppSectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> screens = [
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AccountCubit>(
+          create: (_) => serviceLocator<AccountCubit>()..loadProfile(),
+        ),
+      ],
+      child: const _AppSectionView(),
+    );
+  }
+}
+
+class _AppSectionView extends StatelessWidget {
+  const _AppSectionView();
+
+  @override
+  Widget build(BuildContext context) {
+    final screens = [
       MultiBlocProvider(
         providers: [
           BlocProvider<HomeCubit>(
@@ -29,7 +45,9 @@ class AppSectionScreen extends StatelessWidget {
             create: (_) => serviceLocator<FavouriteCubit>(),
           ),
         ],
-        child: const HomeScreen(),
+        child: HomeScreen(
+          isActive: context.watch<AppSectionCubit>().currentIndex == 0,
+        ),
       ),
       BlocProvider<CartCubit>(
         create: (_) => serviceLocator<CartCubit>()..getCart(),
@@ -39,10 +57,7 @@ class AppSectionScreen extends StatelessWidget {
         create: (_) => serviceLocator<FavouriteCubit>()..getFavourites(),
         child: const FavouriteScreen(),
       ),
-      BlocProvider<AccountCubit>(
-        create: (_) => serviceLocator<AccountCubit>(),
-        child: AccountScreen(),
-      ),
+      const AccountScreen(),
     ];
 
     return BlocBuilder<AppSectionCubit, AppSectionState>(

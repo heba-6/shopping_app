@@ -25,7 +25,7 @@ class ReviewsSection extends StatelessWidget {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: reviews.length,
-            separatorBuilder: (_, __) => const Divider(),
+            separatorBuilder: (_, _) => const Divider(),
             itemBuilder: (_, i) {
               final r = reviews[i];
               return ListTile(

@@ -1,4 +1,3 @@
-
 import 'package:injectable/injectable.dart';
 import 'package:shopping_app/core/networking/result_api.dart';
 import 'package:shopping_app/features/auth/data/api/auth_api.dart';
